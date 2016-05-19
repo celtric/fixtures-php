@@ -54,29 +54,52 @@ final class Fixtures
             $fixtureDefinition = [];
         }
 
-        return $this->convertDefinition($fixtureDefinition);
+        return $this->convertDefinition($fixtureDefinition, $fixtureType);
     }
 
     /**
-     * @param array $fixtureDefinition
+     * @param mixed $fixtureDefinition
+     * @param string $type
      * @return array
      */
-    private function convertDefinition(array $fixtureDefinition)
+    private function convertDefinition($fixtureDefinition, $type)
     {
+        if (!is_array($fixtureDefinition)) {
+            return $fixtureDefinition;
+        }
+
         $values = [];
 
         foreach ($fixtureDefinition as $key => $value) {
-            if (is_array($value)) {
-                $value = $this->convertDefinition($value);
-            }
-
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                $values[$matches[1]] = $value;
+                $values[$matches[1]] = $this->convertDefinition($value, $matches[2]);
             } else {
-                $values[$key] = $value;
+                $values[$key] = $this->convertDefinition($value, "array");
             }
         }
 
-        return $values;
+        return $this->castTo($type, $values);
+    }
+
+    /**
+     * @param string $type
+     * @param array $values
+     * @return mixed
+     */
+    private function castTo($type, $values)
+    {
+        if ($type === "array") {
+            return $values;
+        }
+
+        $serializedValues = serialize((object) $values);
+
+        return unserialize(
+                "O:"
+                . strlen($type)
+                . ":\""
+                . $type
+                . "\":"
+                . substr($serializedValues, $serializedValues[2] + 7));
     }
 }
