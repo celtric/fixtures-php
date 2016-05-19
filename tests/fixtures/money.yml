@@ -1,0 +1,4 @@
+one_euro<Tests\Fixtures\Money>:
+    amount: 100
+    currency<Tests\Fixtures\Currency>:
+        isoCode: "EUR"
