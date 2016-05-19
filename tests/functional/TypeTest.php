@@ -3,8 +3,8 @@
 namespace Tests\Functional;
 
 use Celtric\Fixtures\Fixtures;
-use Tests\Fixtures\Currency;
-use Tests\Fixtures\Money;
+use Tests\Utils\Currency;
+use Tests\Utils\Money;
 
 final class TypeTest extends \PHPUnit_Framework_TestCase
 {

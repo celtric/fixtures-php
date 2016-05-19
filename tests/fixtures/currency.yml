@@ -1,2 +1,2 @@
-euro<Tests\Fixtures\Currency>:
+euro<Tests\Utils\Currency>:
     isoCode: "EUR"

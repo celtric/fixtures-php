@@ -49,6 +49,10 @@ final class Fixtures
         if (empty($fixtureType)) {
             throw new \RuntimeException("Could not find fixture \"{$fullFixtureName}\"");
         }
+
+        if ($fixtureType !== "array" && !class_exists($fixtureType)) {
+            throw new \RuntimeException("Could not find type \"{$fixtureType}\"");
+        }
         
         if ($fixtureType === "array" && empty($fixtureDefinition)) {
             $fixtureDefinition = [];

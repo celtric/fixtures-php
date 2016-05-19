@@ -1,24 +1,24 @@
-one_euro<Tests\Fixtures\Money>:
+one_euro<Tests\Utils\Money>:
     amount: 100
-    currency<Tests\Fixtures\Currency>:
+    currency<Tests\Utils\Currency>:
         isoCode: "EUR"
 
 many_moneys:
     euros:
-        one<Tests\Fixtures\Money>:
+        one<Tests\Utils\Money>:
             amount: 100
-            currency<Tests\Fixtures\Currency>:
+            currency<Tests\Utils\Currency>:
                 isoCode: "EUR"
-        two<Tests\Fixtures\Money>:
+        two<Tests\Utils\Money>:
             amount: 200
-            currency<Tests\Fixtures\Currency>:
+            currency<Tests\Utils\Currency>:
                 isoCode: "EUR"
     dollars:
-        one<Tests\Fixtures\Money>:
+        one<Tests\Utils\Money>:
             amount: 100
-            currency<Tests\Fixtures\Currency>:
+            currency<Tests\Utils\Currency>:
                 isoCode: "USD"
-        two<Tests\Fixtures\Money>:
+        two<Tests\Utils\Money>:
             amount: 200
-            currency<Tests\Fixtures\Currency>:
+            currency<Tests\Utils\Currency>:
                 isoCode: "USD"

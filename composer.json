@@ -8,7 +8,7 @@
         "psr-4": {
             "Tests\\Unit\\": "tests/unit/",
             "Tests\\Functional\\": "tests/functional/",
-            "Tests\\Fixtures\\": "tests/fixtures/"
+            "Tests\\Utils\\": "tests/Utils/"
         }
     },
     "require-dev": {
