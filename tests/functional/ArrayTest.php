@@ -36,6 +36,27 @@ final class ArrayTest extends \PHPUnit_Framework_TestCase
         ], $this->fixture("arrays.multidimensional"));
     }
 
+    /** @test */
+    public function typed_array()
+    {
+        $this->assertEquals([
+            "foo" => "bar"
+        ], $this->fixture("arrays.typed_array"));
+    }
+
+    /** @test */
+    public function multidimensional_typed_array()
+    {
+        $this->assertEquals([
+            "foo" => "bar",
+            "one" => [
+                "two" => [
+                    "three" => "foobar"
+                ]
+            ]
+        ], $this->fixture("arrays.multidimensional_typed_array"));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**

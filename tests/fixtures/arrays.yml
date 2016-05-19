@@ -11,3 +11,12 @@ multidimensional:
     one:
         two:
             three: "foobar"
+
+typed_array<array>:
+    foo: "bar"
+
+multidimensional_typed_array<array>:
+    foo: "bar"
+    one<array>:
+        two<array>:
+            three: "foobar"
