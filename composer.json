@@ -7,7 +7,7 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\Unit\\": "tests/unit/",
-            "Tests\\Acceptance\\": "tests/acceptance/"
+            "Tests\\Functional\\": "tests/functional/"
         }
     },
     "require-dev": {
