@@ -1,1 +1,13 @@
 empty:
+
+scalar_values:
+    int: 123
+    float: 123.456
+    string: "Foo"
+    bool: true
+
+multidimensional:
+    foo: "bar"
+    one:
+        two:
+            three: "foobar"
