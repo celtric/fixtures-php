@@ -2,3 +2,23 @@ one_euro<Tests\Fixtures\Money>:
     amount: 100
     currency<Tests\Fixtures\Currency>:
         isoCode: "EUR"
+
+many_moneys:
+    euros:
+        one<Tests\Fixtures\Money>:
+            amount: 100
+            currency<Tests\Fixtures\Currency>:
+                isoCode: "EUR"
+        two<Tests\Fixtures\Money>:
+            amount: 200
+            currency<Tests\Fixtures\Currency>:
+                isoCode: "EUR"
+    dollars:
+        one<Tests\Fixtures\Money>:
+            amount: 100
+            currency<Tests\Fixtures\Currency>:
+                isoCode: "USD"
+        two<Tests\Fixtures\Money>:
+            amount: 200
+            currency<Tests\Fixtures\Currency>:
+                isoCode: "USD"

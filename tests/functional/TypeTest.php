@@ -20,6 +20,21 @@ final class TypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("money.one_euro"));
     }
 
+    /** @test */
+    public function object_collections()
+    {
+        $this->assertEquals([
+            "euros" => [
+                "one" => new Money(100, new Currency("EUR")),
+                "two" => new Money(200, new Currency("EUR"))
+            ],
+            "dollars" => [
+                "one" => new Money(100, new Currency("USD")),
+                "two" => new Money(200, new Currency("USD"))
+            ]
+        ], $this->fixture("money.many_moneys"));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
