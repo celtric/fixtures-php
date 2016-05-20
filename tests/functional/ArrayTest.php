@@ -2,9 +2,7 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\Fixtures;
-
-final class ArrayTest extends \PHPUnit_Framework_TestCase
+final class ArrayTest extends FunctionalTestCase
 {
     /** @test */
     public function empty_array()
@@ -61,16 +59,5 @@ final class ArrayTest extends \PHPUnit_Framework_TestCase
                 ]
             ]
         ], $this->fixture("arrays.multidimensional_typed_array"));
-    }
-
-    //---[ Helpers ]--------------------------------------------------------------------//
-
-    /**
-     * @param string $fixtureIdentifier
-     * @return mixed
-     */
-    private function fixture($fixtureIdentifier)
-    {
-        return (new Fixtures(__DIR__ . "/../fixtures/"))->fixture($fixtureIdentifier);
     }
 }

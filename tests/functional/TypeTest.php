@@ -2,11 +2,10 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\Fixtures;
 use Tests\Utils\Currency;
 use Tests\Utils\Money;
 
-final class TypeTest extends \PHPUnit_Framework_TestCase
+final class TypeTest extends FunctionalTestCase
 {
     /** @test */
     public function simple_object()
@@ -33,16 +32,5 @@ final class TypeTest extends \PHPUnit_Framework_TestCase
                 "two" => new Money(200, new Currency("USD"))
             ]
         ], $this->fixture("money.many_moneys"));
-    }
-
-    //---[ Helpers ]--------------------------------------------------------------------//
-
-    /**
-     * @param string $fixtureIdentifier
-     * @return mixed
-     */
-    private function fixture($fixtureIdentifier)
-    {
-        return (new Fixtures(__DIR__ . "/../fixtures/"))->fixture($fixtureIdentifier);
     }
 }
