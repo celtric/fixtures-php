@@ -1,0 +1,7 @@
+integer: 123
+
+float: 123.456
+
+string: "Foo"
+
+boolean: true
