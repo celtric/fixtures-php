@@ -1,24 +1,32 @@
 same_file_array:
-    foo: "@bar"
+    foo: "@references.bar"
 
 bar:
     fullName: "FooBar"
 
 ref:
-    ref2: "@ref2"
-    name: "@name"
+    ref2: "@references.ref2"
+    name: "@references.name"
     ref:
-        ref2: "@ref2"
-        name: "@name"
+        ref2: "@references.ref2"
+        name: "@references.name"
         ref:
-            ref2: "@ref2"
-            name: "@name"
+            ref2: "@references.ref2"
+            name: "@references.name"
 
 ref2:
-    name: "@name"
+    name: "@references.name"
     ref:
-        name: "@name"
+        name: "@references.name"
         ref:
-            name: "@name"
+            name: "@references.name"
 
 name: "Ricard"
+
+external_file_same_namespace:
+    name: "@references.name"
+    balance: "@money.one_euro"
+
+external_file_different_namespaces:
+    person: "@company.people.ricard"
+    balance: "@money.one_euro"

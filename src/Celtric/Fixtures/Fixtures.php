@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Parser;
 
 final class Fixtures
 {
+    const DEFAULT_TYPE = "array";
+
     /** @var string */
     private $rootPath;
 
@@ -23,22 +25,21 @@ final class Fixtures
      */
     public function fixture($fullFixtureName)
     {
-        list($namespace, $fixtureName) = explode(".", $fullFixtureName);
+        $fixtureIdentifier = FixtureIdentifier::fromFullFixtureName($fullFixtureName);
 
-        $yamlDefinitions = file_get_contents(
-                $this->rootPath . str_replace(".", DIRECTORY_SEPARATOR, $namespace) . ".yml");
+        $yamlDefinitions = file_get_contents($fixtureIdentifier->toFilePath($this->rootPath));
         
         $definitions = (new Parser())->parse($yamlDefinitions);
 
         $fixtureDefinition = null;
         $fixtureType = null;
 
-        if (array_key_exists($fixtureName, $definitions)) {
-            $fixtureDefinition = $definitions[$fixtureName];
-            $fixtureType = "array";
+        if (array_key_exists($fixtureIdentifier->fixtureName(), $definitions)) {
+            $fixtureDefinition = $definitions[$fixtureIdentifier->fixtureName()];
+            $fixtureType = self::DEFAULT_TYPE;
         } else {
             foreach ($definitions as $definitionName => $definitionData) {
-                if (preg_match("/^" . $fixtureName . "<(.*)>$/", $definitionName, $matches)) {
+                if (preg_match("/^{$fixtureIdentifier->fixtureName()}<(.*)>$/", $definitionName, $matches)) {
                     $fixtureDefinition = $definitions[$matches[0]];
                     $fixtureType = $matches[1];
                     break;
@@ -58,23 +59,22 @@ final class Fixtures
             $fixtureDefinition = [];
         }
 
-        return $this->convertDefinition($fixtureDefinition, $fixtureType, $namespace);
+        return $this->convertDefinition($fixtureDefinition, $fixtureType);
     }
 
     /**
      * @param mixed $fixtureDefinition
      * @param string $type
-     * @param string $namespace
      * @return array
      */
-    private function convertDefinition($fixtureDefinition, $type, $namespace)
+    private function convertDefinition($fixtureDefinition, $type)
     {
         if (!is_array($fixtureDefinition)) {
             $isReference = substr($fixtureDefinition, 0, 1) === "@";
 
             if ($isReference) {
                 $fixtureName = substr($fixtureDefinition, 1);
-                return $this->fixture("{$namespace}.{$fixtureName}");
+                return $this->fixture($fixtureName);
             }
 
             return $fixtureDefinition;
@@ -84,9 +84,9 @@ final class Fixtures
 
         foreach ($fixtureDefinition as $key => $value) {
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                $values[$matches[1]] = $this->convertDefinition($value, $matches[2], $namespace);
+                $values[$matches[1]] = $this->convertDefinition($value, $matches[2]);
             } else {
-                $values[$key] = $this->convertDefinition($value, "array", $namespace);
+                $values[$key] = $this->convertDefinition($value, "array");
             }
         }
 

@@ -2,6 +2,10 @@
 
 namespace Tests\Functional;
 
+use Tests\Utils\Currency;
+use Tests\Utils\Money;
+use Tests\Utils\Person;
+
 final class ReferenceTest extends FunctionalTestCase
 {
     /** @test */
@@ -53,5 +57,14 @@ final class ReferenceTest extends FunctionalTestCase
                 ]
             ]
         ], $this->fixture("references.ref"));
+    }
+
+    /** @test */
+    public function multiple_files_inside_same_namespace()
+    {
+        $this->assertEquals([
+            "person" => new Person("Ricard", 30),
+            "balance" => new Money(100, new Currency("EUR"))
+        ], $this->fixture("references.external_file_different_namespaces"));
     }
 }
