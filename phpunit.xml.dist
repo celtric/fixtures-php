@@ -5,6 +5,14 @@
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true">
+
+    <php>
+        <env name="TEST_DB_HOST" value=""/>
+        <env name="TEST_DB_NAME" value=""/>
+        <env name="TEST_DB_USER" value=""/>
+        <env name="TEST_DB_PASSWORD" value=""/>
+    </php>
+
     <testsuites>
         <testsuite name="All">
             <directory>tests</directory>
@@ -16,4 +24,5 @@
             <directory>tests/functional</directory>
         </testsuite>
     </testsuites>
+
 </phpunit>

@@ -4,6 +4,9 @@ namespace Tests\Utils;
 
 final class Person
 {
+    /** @var int */
+    private $id;
+
     /** @var string */
     private $name;
 

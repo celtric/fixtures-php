@@ -1,0 +1,13 @@
+<doctrine-mapping
+        xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+
+    <entity name="Tests\Utils\Person" table="people">
+        <id name="id" type="integer">
+          <generator strategy="AUTO"/>
+        </id>
+        <field name="name" type="string"/>
+        <field name="age" type="integer"/>
+    </entity>
+</doctrine-mapping>
