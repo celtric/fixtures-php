@@ -31,12 +31,22 @@ final class Fixtures
         
         $definitions = (new Parser())->parse($yamlDefinitions);
 
+        if (!empty($definitions["root_type"])) {
+            if (!is_string($definitions["root_type"])) {
+                throw new \RuntimeException("Root type must be defined as a string");
+            }
+            $rootType = $definitions["root_type"];
+            unset($definitions["root_type"]);
+        } else {
+            $rootType = self::DEFAULT_TYPE;
+        }
+
         $fixtureDefinition = null;
         $fixtureType = null;
 
         if (array_key_exists($fixtureIdentifier->fixtureName(), $definitions)) {
             $fixtureDefinition = $definitions[$fixtureIdentifier->fixtureName()];
-            $fixtureType = self::DEFAULT_TYPE;
+            $fixtureType = $rootType;
         } else {
             foreach ($definitions as $definitionName => $definitionData) {
                 if (preg_match("/^{$fixtureIdentifier->fixtureName()}<(.*)>$/", $definitionName, $matches)) {

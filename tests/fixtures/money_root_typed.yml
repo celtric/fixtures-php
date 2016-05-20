@@ -1,0 +1,6 @@
+root_type: Tests\Utils\Money
+
+one_euro:
+    amount: 100
+    currency<Tests\Utils\Currency>:
+        isoCode: "EUR"

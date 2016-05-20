@@ -33,4 +33,10 @@ final class TypeTest extends FunctionalTestCase
             ]
         ], $this->fixture("money.many_moneys"));
     }
+
+    /** @test */
+    public function root_type()
+    {
+        $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("money_root_typed.one_euro"));
+    }
 }
