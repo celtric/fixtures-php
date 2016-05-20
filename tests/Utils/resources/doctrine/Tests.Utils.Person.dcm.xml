@@ -10,4 +10,5 @@
         <field name="name" type="string"/>
         <field name="age" type="integer"/>
     </entity>
+
 </doctrine-mapping>

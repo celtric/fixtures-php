@@ -114,14 +114,14 @@ final class Fixtures
             return $values;
         }
 
-        $serializedValues = serialize((object) $values);
+        $instance = (new \ReflectionClass($type))->newInstanceWithoutConstructor();
 
-        return unserialize(
-                "O:"
-                . strlen($type)
-                . ":\""
-                . $type
-                . "\":"
-                . substr($serializedValues, $serializedValues[2] + 7));
+        foreach ($values as $key => $value) {
+            $reflectedProperty = new \ReflectionProperty($instance, $key);
+            $reflectedProperty->setAccessible(true);
+            $reflectedProperty->setValue($instance, $value);
+        }
+
+        return $instance;
     }
 }
