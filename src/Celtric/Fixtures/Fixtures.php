@@ -80,7 +80,7 @@ final class Fixtures
     private function convertDefinition($fixtureDefinition, $type)
     {
         if (!is_array($fixtureDefinition)) {
-            $isReference = substr($fixtureDefinition, 0, 1) === "@";
+            $isReference = $fixtureDefinition[0] === "@";
 
             if ($isReference) {
                 $fixtureName = substr($fixtureDefinition, 1);

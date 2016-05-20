@@ -6,16 +6,16 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Unit\\": "tests/unit/",
             "Tests\\Functional\\": "tests/functional/",
             "Tests\\Utils\\": "tests/Utils/"
         }
     },
-    "require-dev": {
-        "phpunit/phpunit": "~4.8",
-        "doctrine/orm": "^2.5"
-    },
     "require": {
         "symfony/yaml": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8",
+        "doctrine/orm": "^2.5",
+        "ramsey/uuid": "^3.4"
     }
 }

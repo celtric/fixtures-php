@@ -9,6 +9,13 @@
         </id>
         <field name="name" type="string"/>
         <field name="age" type="integer"/>
+
+        <one-to-one field="friend" target-entity="Tests\Utils\Person">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+            <join-column name="friend" referenced-column-name="id" />
+        </one-to-one>
     </entity>
 
 </doctrine-mapping>

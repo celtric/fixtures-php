@@ -27,6 +27,14 @@ final class Person
     }
 
     /**
+     * @return int
+     */
+    public function id()
+    {
+        return $this->id;
+    }
+
+    /**
      * @param Person $friend
      */
     public function setFriend(Person $friend)
