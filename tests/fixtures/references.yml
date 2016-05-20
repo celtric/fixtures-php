@@ -1,0 +1,24 @@
+same_file_array:
+    foo: "@bar"
+
+bar:
+    fullName: "FooBar"
+
+ref:
+    ref2: "@ref2"
+    name: "@name"
+    ref:
+        ref2: "@ref2"
+        name: "@name"
+        ref:
+            ref2: "@ref2"
+            name: "@name"
+
+ref2:
+    name: "@name"
+    ref:
+        name: "@name"
+        ref:
+            name: "@name"
+
+name: "Ricard"

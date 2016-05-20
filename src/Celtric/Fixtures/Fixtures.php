@@ -23,10 +23,10 @@ final class Fixtures
      */
     public function fixture($fullFixtureName)
     {
-        list($filePathDefinition, $fixtureName) = explode(".", $fullFixtureName);
+        list($namespace, $fixtureName) = explode(".", $fullFixtureName);
 
         $yamlDefinitions = file_get_contents(
-                $this->rootPath . str_replace(".", DIRECTORY_SEPARATOR, $filePathDefinition) . ".yml");
+                $this->rootPath . str_replace(".", DIRECTORY_SEPARATOR, $namespace) . ".yml");
         
         $definitions = (new Parser())->parse($yamlDefinitions);
 
@@ -58,17 +58,25 @@ final class Fixtures
             $fixtureDefinition = [];
         }
 
-        return $this->convertDefinition($fixtureDefinition, $fixtureType);
+        return $this->convertDefinition($fixtureDefinition, $fixtureType, $namespace);
     }
 
     /**
      * @param mixed $fixtureDefinition
      * @param string $type
+     * @param string $namespace
      * @return array
      */
-    private function convertDefinition($fixtureDefinition, $type)
+    private function convertDefinition($fixtureDefinition, $type, $namespace)
     {
         if (!is_array($fixtureDefinition)) {
+            $isReference = substr($fixtureDefinition, 0, 1) === "@";
+
+            if ($isReference) {
+                $fixtureName = substr($fixtureDefinition, 1);
+                return $this->fixture("{$namespace}.{$fixtureName}");
+            }
+
             return $fixtureDefinition;
         }
 
@@ -76,9 +84,9 @@ final class Fixtures
 
         foreach ($fixtureDefinition as $key => $value) {
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                $values[$matches[1]] = $this->convertDefinition($value, $matches[2]);
+                $values[$matches[1]] = $this->convertDefinition($value, $matches[2], $namespace);
             } else {
-                $values[$key] = $this->convertDefinition($value, "array");
+                $values[$key] = $this->convertDefinition($value, "array", $namespace);
             }
         }
 
