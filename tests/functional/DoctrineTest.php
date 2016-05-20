@@ -41,6 +41,22 @@ final class DoctrineTest extends FunctionalTestCase
         $this->assertNotSame($person, $retrievedPerson);
     }
 
+    /** @test */
+    public function complex_object()
+    {
+        $person = $this->fixture("company.people.ricard_with_friend");
+
+        $expected = new Person("Ricard", 30);
+        $expected->setFriend(new Person("Phteven", 8));
+
+        $this->assertEqualsIgnoringId($expected, $person);
+
+        $retrievedPerson = $this->findPerson(1);
+
+        $this->assertEquals($person, $retrievedPerson);
+        $this->assertNotSame($person, $retrievedPerson);
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**

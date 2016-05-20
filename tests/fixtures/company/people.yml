@@ -1,3 +1,14 @@
-ricard<Tests\Utils\Person>:
+root_type: Tests\Utils\Person
+
+ricard:
     name: "Ricard"
     age: 30
+
+ricard_with_friend:
+    name: "Ricard"
+    age: 30
+    friend: "@company.people.phteven"
+
+phteven:
+    name: "Phteven"
+    age: 8

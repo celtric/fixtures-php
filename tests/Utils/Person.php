@@ -13,6 +13,9 @@ final class Person
     /** @var int */
     private $age;
 
+    /** @var Person|null */
+    private $friend;
+
     /**
      * @param string $name
      * @param int $age
@@ -21,5 +24,13 @@ final class Person
     {
         $this->name = $name;
         $this->age = $age;
+    }
+
+    /**
+     * @param Person $friend
+     */
+    public function setFriend(Person $friend)
+    {
+        $this->friend = $friend;
     }
 }
