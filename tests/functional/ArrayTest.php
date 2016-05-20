@@ -24,6 +24,12 @@ final class ArrayTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
+    public function lists()
+    {
+        $this->assertEquals([1, 2, 3, [4, 5, [6, 7]]], $this->fixture("arrays.lists"));
+    }
+
+    /** @test */
     public function multidimensional()
     {
         $this->assertEquals([
