@@ -2,21 +2,17 @@
 
 namespace Celtric\Fixtures;
 
-use Symfony\Component\Yaml\Parser;
-
 final class Fixtures
 {
-    const DEFAULT_TYPE = "array";
-
-    /** @var string */
-    private $rootPath;
+    /** @var DefinitionLocator */
+    private $definitionLocator;
 
     /**
-     * @param string $rootPath
+     * @param DefinitionLocator $definitionLocator
      */
-    public function __construct($rootPath)
+    public function __construct(DefinitionLocator $definitionLocator)
     {
-        $this->rootPath = $rootPath;
+        $this->definitionLocator = $definitionLocator;
     }
 
     /**
@@ -25,82 +21,39 @@ final class Fixtures
      */
     public function fixture($fullFixtureName)
     {
-        $fixtureIdentifier = FixtureIdentifier::fromFullFixtureName($fullFixtureName);
+        $fixtureIdentifier = new FixtureIdentifier($fullFixtureName);
 
-        $yamlDefinitions = file_get_contents($fixtureIdentifier->toFilePath($this->rootPath));
-        
-        $definitions = (new Parser())->parse($yamlDefinitions);
+        $definition = $this->definitionLocator->locate($fixtureIdentifier);
 
-        if (!empty($definitions["root_type"])) {
-            if (!is_string($definitions["root_type"])) {
-                throw new \RuntimeException("Root type must be defined as a string");
-            }
-            $rootType = $definitions["root_type"];
-            unset($definitions["root_type"]);
-        } else {
-            $rootType = self::DEFAULT_TYPE;
-        }
-
-        $fixtureDefinition = null;
-        $fixtureType = null;
-
-        if (array_key_exists($fixtureIdentifier->fixtureName(), $definitions)) {
-            $fixtureDefinition = $definitions[$fixtureIdentifier->fixtureName()];
-            $fixtureType = $rootType;
-        } else {
-            foreach ($definitions as $definitionName => $definitionData) {
-                if (preg_match("/^{$fixtureIdentifier->fixtureName()}<(.*)>$/", $definitionName, $matches)) {
-                    $fixtureDefinition = $definitions[$matches[0]];
-                    $fixtureType = $matches[1];
-                    break;
-                }
-            }
-        }
-        
-        if (empty($fixtureType)) {
-            throw new \RuntimeException("Could not find fixture \"{$fullFixtureName}\"");
-        }
-
-        if ($fixtureType !== "array" && !class_exists($fixtureType)) {
-            throw new \RuntimeException("Could not find type \"{$fixtureType}\"");
-        }
-        
-        if ($fixtureType === "array" && empty($fixtureDefinition)) {
-            $fixtureDefinition = [];
-        }
-
-        return $this->convertDefinition($fixtureDefinition, $fixtureType);
+        return $this->convertDefinition($definition);
     }
 
     /**
-     * @param mixed $fixtureDefinition
-     * @param string $type
+     * @param FixtureDefinition $fixtureDefinition
      * @return array
      */
-    private function convertDefinition($fixtureDefinition, $type)
+    private function convertDefinition(FixtureDefinition $fixtureDefinition)
     {
-        if (!is_array($fixtureDefinition)) {
-            $isReference = $fixtureDefinition[0] === "@";
-
-            if ($isReference) {
-                $fixtureName = substr($fixtureDefinition, 1);
+        if (!is_array($fixtureDefinition->data())) {
+            if ($fixtureDefinition->isReference()) {
+                $fixtureName = substr($fixtureDefinition->data(), 1);
                 return $this->fixture($fixtureName);
             }
 
-            return $fixtureDefinition;
+            return $fixtureDefinition->data();
         }
 
-        $values = [];
+        $data = [];
 
-        foreach ($fixtureDefinition as $key => $value) {
+        foreach ($fixtureDefinition->data() as $key => $value) {
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                $values[$matches[1]] = $this->convertDefinition($value, $matches[2]);
+                $data[$matches[1]] = $this->convertDefinition(new FixtureDefinition($matches[2], $value));
             } else {
-                $values[$key] = $this->convertDefinition($value, "array");
+                $data[$key] = $this->convertDefinition(new FixtureDefinition("array", $value));
             }
         }
 
-        return $this->castTo($type, $values);
+        return $this->castTo($fixtureDefinition->type(), $data);
     }
 
     /**

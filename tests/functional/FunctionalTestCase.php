@@ -2,6 +2,7 @@
 
 namespace Tests\Functional;
 
+use Celtric\Fixtures\DefinitionsLocators\FileDefinitionLocator;
 use Celtric\Fixtures\Fixtures;
 
 abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
@@ -12,6 +13,6 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function fixture($fixtureIdentifier)
     {
-        return (new Fixtures(__DIR__ . "/../fixtures/"))->fixture($fixtureIdentifier);
+        return (new Fixtures(new FileDefinitionLocator(__DIR__ . "/../fixtures/")))->fixture($fixtureIdentifier);
     }
 }
