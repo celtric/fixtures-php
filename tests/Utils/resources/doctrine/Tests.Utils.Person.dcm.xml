@@ -5,7 +5,7 @@
 
     <entity name="Tests\Utils\Person" table="people">
         <id name="id" type="integer">
-          <generator strategy="AUTO"/>
+            <generator strategy="AUTO"/>
         </id>
         <field name="name" type="string"/>
         <field name="age" type="integer"/>
@@ -14,7 +14,7 @@
             <cascade>
                 <cascade-persist/>
             </cascade>
-            <join-column name="friend" referenced-column-name="id" />
+            <join-column name="friend" referenced-column-name="id"/>
         </one-to-one>
     </entity>
 
