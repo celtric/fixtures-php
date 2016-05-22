@@ -82,7 +82,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function range()
+    public function generates_new_definitions_based_on_a_given_range()
     {
         $this->assertEquals([
             "definition_0" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
@@ -93,6 +93,21 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
             "stdClass" => [
                 "definition_{0..3}" => [
                     "foo" => "bar"
+                ]
+            ]
+        ]));
+    }
+
+    /** @test */
+    public function generates_new_definitions_based_on_a_given_list()
+    {
+        $this->assertEquals([
+            "definition_option_a" => new FixtureDefinition("stdClass", ["option" => new FixtureDefinition("string", "option_a")]),
+            "definition_option_b" => new FixtureDefinition("stdClass", ["option" => new FixtureDefinition("string", "option_b")])
+        ], $this->parse([
+            "stdClass" => [
+                "definition_{option_a, option_b}" => [
+                    "option" => "<current()>"
                 ]
             ]
         ]));

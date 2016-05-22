@@ -30,6 +30,25 @@ final class AliceStyleParser implements RawDataParser
                     continue;
                 }
 
+                $isCustomList = preg_match("/(.*)\\{([^,]+(\\s*,\\s*[^,]+)*)\\}/", $name, $matches);
+
+                if ($isCustomList) {
+                    $baseName = $matches[1];
+                    $listItems = array_map("trim", explode(",", $matches[2]));
+
+                    foreach ($listItems as $i) {
+                        $itemValues = $values;
+                        foreach ($itemValues as &$value) {
+                            if ($value === "<current()>") {
+                                $value = $i;
+                            }
+                        }
+                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($itemValues));
+                    }
+
+                    continue;
+                }
+
                 $definitions[$name] = new FixtureDefinition($type, $this->parseValues($values));
             }
         }
