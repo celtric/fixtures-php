@@ -110,7 +110,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function simple_type()
+    public function simple_object()
     {
         $this->assertEquals([
             "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
@@ -124,7 +124,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function complex_type()
+    public function complex_object()
     {
         $this->assertEquals([
             "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [

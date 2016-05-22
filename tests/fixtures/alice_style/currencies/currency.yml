@@ -1,0 +1,7 @@
+Tests\Utils\Currency:
+
+    euro:
+        isoCode: "EUR"
+
+    dollar:
+        isoCode: "USD"

@@ -30,7 +30,7 @@ final class CeltricStyleParser implements RawDataParser
     /**
      * @param mixed $rawData
      * @param string $defaultType
-     * @return array
+     * @return FixtureDefinition[]
      */
     private function parseData($rawData, $defaultType)
     {
