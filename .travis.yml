@@ -6,8 +6,11 @@ php:
   - 7.0
   - hhvm
 
+services:
+  - mysql
+
 before_install:
-  - composer self-update
+  - mysql -e "CREATE DATABASE IF NOT EXISTS test;" -uroot
 
 install:
   - travis_retry composer install --no-interaction --prefer-source
