@@ -5,14 +5,14 @@ namespace Celtric\Fixtures;
 final class FixtureInstantiator
 {
     /** @var DefinitionLocator */
-    private $definitionLocator;
+    private $referenceLocator;
 
     /**
-     * @param DefinitionLocator $definitionLocator
+     * @param DefinitionLocator $referenceLocator
      */
-    public function __construct(DefinitionLocator $definitionLocator)
+    public function __construct(DefinitionLocator $referenceLocator)
     {
-        $this->definitionLocator = $definitionLocator;
+        $this->referenceLocator = $referenceLocator;
     }
 
 
@@ -64,7 +64,7 @@ final class FixtureInstantiator
      */
     private function instantiateReference(FixtureDefinition $fixtureDefinition)
     {
-        return $this->instantiate($this->definitionLocator->locate(new FixtureIdentifier($fixtureDefinition->data())));
+        return $this->instantiate($this->referenceLocator->locate(new FixtureIdentifier($fixtureDefinition->data())));
     }
 
     /**
