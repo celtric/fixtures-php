@@ -37,12 +37,10 @@ final class AliceStyleParser implements RawDataParser
                     $listItems = array_map("trim", explode(",", $matches[2]));
 
                     foreach ($listItems as $i) {
-                        $itemValues = $values;
-                        foreach ($itemValues as &$value) {
-                            if ($value === "<current()>") {
-                                $value = $i;
-                            }
-                        }
+                        $itemValues = array_map(function($value) use ($i) {
+                            return str_replace("<current()>", $i, $value);
+                        }, $values);
+
                         $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $itemValues));
                     }
 

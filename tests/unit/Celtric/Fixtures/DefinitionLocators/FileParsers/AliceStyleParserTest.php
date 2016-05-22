@@ -102,12 +102,19 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function custom_list()
     {
         $this->assertEquals([
-            "definition_option_a" => new FixtureDefinition("stdClass", ["option" => new FixtureDefinition("string", "option_a")]),
-            "definition_option_b" => new FixtureDefinition("stdClass", ["option" => new FixtureDefinition("string", "option_b")])
+            "definition_option_a" => new FixtureDefinition("stdClass", [
+                "complete" => new FixtureDefinition("string", "option_a"),
+                "partial" => new FixtureDefinition("string", "option_a@foo")
+            ]),
+            "definition_option_b" => new FixtureDefinition("stdClass", [
+                "complete" => new FixtureDefinition("string", "option_b"),
+                "partial" => new FixtureDefinition("string", "option_b@foo")
+            ])
         ], $this->parse([
             "stdClass" => [
                 "definition_{option_a, option_b}" => [
-                    "option" => "<current()>"
+                    "complete" => "<current()>",
+                    "partial" => "<current()>@foo"
                 ]
             ]
         ]));
