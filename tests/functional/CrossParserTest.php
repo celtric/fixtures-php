@@ -34,6 +34,6 @@ final class CrossParserTest extends \PHPUnit_Framework_TestCase
         $fixtures = new Fixtures(
                 new RegexNamespaceBasedDefinitionLocator(new YAMLRawDataLocator(__DIR__ . "/../fixtures/"), $parsers));
 
-        return $fixtures->fixture($fixtureIdentifier);
+        return $fixtures->loadFixture($fixtureIdentifier);
     }
 }
