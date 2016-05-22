@@ -4,7 +4,7 @@ namespace Tests\Functional;
 
 use Celtric\Fixtures\Parsers\AliceStyleParser;
 
-abstract class AliceStyleFunctionalTestCase extends FunctionalTestCase
+abstract class AliceStyleFunctionalTestCase extends SingleParserTestCase
 {
     /**
      * @inheritdoc

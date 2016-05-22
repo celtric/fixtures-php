@@ -76,8 +76,8 @@ final class CeltricStyleParser implements RawDataParser
 
         if ($nativeType === "double") {
             return "float";
-        } else {
-            return $nativeType;
         }
+
+        return $nativeType;
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\DefinitionLocator;
-use Celtric\Fixtures\Locators\YAMLRawDataLocator;
+use Celtric\Fixtures\DefinitionLocators\SingleParserDefinitionLocator;
+use Celtric\Fixtures\RawDataLocators\YAMLRawDataLocator;
 use Celtric\Fixtures\Fixtures;
 use Celtric\Fixtures\RawDataParser;
 
-abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
+abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param string $fixtureIdentifier
@@ -15,7 +15,7 @@ abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function fixture($fixtureIdentifier)
     {
-        $definitionLocator = new DefinitionLocator(
+        $definitionLocator = new SingleParserDefinitionLocator(
                 new YAMLRawDataLocator(__DIR__ . "/../fixtures/"),
                 $this->parser());
 

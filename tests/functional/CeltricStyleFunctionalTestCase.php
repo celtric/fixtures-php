@@ -4,7 +4,7 @@ namespace Tests\Functional;
 
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
 
-abstract class CeltricStyleFunctionalTestCase extends FunctionalTestCase
+abstract class CeltricStyleFunctionalTestCase extends SingleParserTestCase
 {
     /**
      * @inheritdoc

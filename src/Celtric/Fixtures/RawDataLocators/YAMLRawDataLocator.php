@@ -1,6 +1,6 @@
 <?php
 
-namespace Celtric\Fixtures\Locators;
+namespace Celtric\Fixtures\RawDataLocators;
 
 use Celtric\Fixtures\RawDataLocator;
 use Celtric\Fixtures\FixtureIdentifier;
