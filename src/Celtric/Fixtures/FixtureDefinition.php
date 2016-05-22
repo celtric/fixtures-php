@@ -59,4 +59,12 @@ final class FixtureDefinition
     {
         return $this->type === "array";
     }
+
+    /**
+     * @return bool
+     */
+    public function isMethodCall()
+    {
+        return $this->type === "method_call";
+    }
 }

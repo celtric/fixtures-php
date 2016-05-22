@@ -5,6 +5,7 @@ namespace Tests\Functional\alice_style;
 use Tests\Functional\AliceStyleFunctionalTestCase;
 use Tests\Utils\Currency;
 use Tests\Utils\Money;
+use Tests\Utils\Person;
 
 final class AliceStyleTest extends AliceStyleFunctionalTestCase
 {
@@ -13,5 +14,14 @@ final class AliceStyleTest extends AliceStyleFunctionalTestCase
     {
         $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("alice_style.money.one_euro"));
         $this->assertEquals(new Money(200, new Currency("USD")), $this->fixture("alice_style.money.two_dollars"));
+    }
+
+    /** @test */
+    public function method_calls()
+    {
+        $person = new Person("Ricard", 30);
+        $person->setFriend(new Person("Phteven", 8));
+
+        $this->assertEquals($person, $this->fixture("alice_style.people.ricard_with_late_friend"));
     }
 }

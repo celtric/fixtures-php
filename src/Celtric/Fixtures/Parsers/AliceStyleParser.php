@@ -17,14 +17,14 @@ final class AliceStyleParser implements RawDataParser
         foreach ($rawData as $type => $typeRawDefinitions) {
             foreach ($typeRawDefinitions as $name => $values) {
                 $isRange = preg_match("/(.*)\\{(\\d+)(\\.{2,})(\\d+)\\}/i", $name, $matches);
-                
+
                 if ($isRange) {
                     $baseName = $matches[1];
                     $from = $matches[2];
                     $to = $matches[4];
 
                     foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($values));
+                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $values));
                     }
 
                     continue;
@@ -43,13 +43,13 @@ final class AliceStyleParser implements RawDataParser
                                 $value = $i;
                             }
                         }
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($itemValues));
+                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $itemValues));
                     }
 
                     continue;
                 }
 
-                $definitions[$name] = new FixtureDefinition($type, $this->parseValues($values));
+                $definitions[$name] = new FixtureDefinition($type, $this->parseValues($type, $values));
             }
         }
 
@@ -57,10 +57,11 @@ final class AliceStyleParser implements RawDataParser
     }
 
     /**
+     * @param string $type
      * @param array $rawValues
      * @return FixtureDefinition[]
      */
-    private function parseValues(array $rawValues)
+    private function parseValues($type, array $rawValues)
     {
         $parsedValues = [];
 
@@ -69,6 +70,13 @@ final class AliceStyleParser implements RawDataParser
 
             if ($isReference) {
                 $parsedValues[$key] = new FixtureDefinition("reference", substr($value, 1));
+                continue;
+            }
+
+            $isMethod = method_exists($type, $key);
+
+            if ($isMethod) {
+                $parsedValues[$key] = new FixtureDefinition("method_call", $this->parseValues($type, $value));
                 continue;
             }
 

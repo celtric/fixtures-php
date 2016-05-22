@@ -82,7 +82,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function generates_new_definitions_based_on_a_given_range()
+    public function range()
     {
         $this->assertEquals([
             "definition_0" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
@@ -99,7 +99,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function generates_new_definitions_based_on_a_given_list()
+    public function custom_list()
     {
         $this->assertEquals([
             "definition_option_a" => new FixtureDefinition("stdClass", ["option" => new FixtureDefinition("string", "option_a")]),
@@ -108,6 +108,46 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
             "stdClass" => [
                 "definition_{option_a, option_b}" => [
                     "option" => "<current()>"
+                ]
+            ]
+        ]));
+    }
+
+    /** @test */
+    public function method_call()
+    {
+        $this->assertEquals([
+            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
+                "setFriend" => new FixtureDefinition("method_call", [
+                    new FixtureDefinition("string", "a_friend")
+                ])
+            ])
+        ], $this->parse([
+            "Tests\\Utils\\Person" => [
+                "a_person" => [
+                    "setFriend" => [
+                        "a_friend"
+                    ]
+                ]
+            ]
+        ]));
+    }
+
+    /** @test */
+    public function method_call_with_reference()
+    {
+        $this->assertEquals([
+            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
+                "setFriend" => new FixtureDefinition("method_call", [
+                    new FixtureDefinition("reference", "a_friend")
+                ])
+            ])
+        ], $this->parse([
+            "Tests\\Utils\\Person" => [
+                "a_person" => [
+                    "setFriend" => [
+                        "@a_friend"
+                    ]
                 ]
             ]
         ]));

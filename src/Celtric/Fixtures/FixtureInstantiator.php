@@ -75,6 +75,12 @@ final class FixtureInstantiator
         $instance = (new \ReflectionClass($fixtureDefinition->type()))->newInstanceWithoutConstructor();
 
         foreach ($fixtureDefinition->data() as $key => $value) {
+            if ($value instanceof FixtureDefinition && $value->isMethodCall()) {
+                $arguments = array_map([$this, "instantiate"], $value->data());
+                call_user_func_array([$instance, $key], $arguments);
+                continue;
+            }
+
             $reflectedProperty = new \ReflectionProperty($instance, $key);
             $reflectedProperty->setAccessible(true);
             $reflectedProperty->setValue($instance, $this->instantiate($value));
