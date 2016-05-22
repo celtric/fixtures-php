@@ -1,22 +1,19 @@
 <?php
 
-namespace Celtric\Fixtures\DefinitionLocators\FileParsers;
+namespace Celtric\Fixtures\Parsers;
 
-use Celtric\Fixtures\DefinitionLocators\FileParser;
+use Celtric\Fixtures\RawDataParser;
 use Celtric\Fixtures\FixtureDefinition;
-use Symfony\Component\Yaml\Parser;
 
-final class CeltricStyleParser implements FileParser
+final class CeltricStyleParser implements RawDataParser
 {
     const DEFAULT_TYPE = "array";
 
     /**
      * @inheritDoc
      */
-    public function parse($fileContent)
+    public function parse(array $rawData)
     {
-        $rawData = (new Parser())->parse($fileContent);
-
         if (!empty($rawData["root_type"])) {
             if (!is_string($rawData["root_type"])) {
                 throw new \RuntimeException("Root type must be defined as a string");

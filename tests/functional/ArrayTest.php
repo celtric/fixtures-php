@@ -2,7 +2,7 @@
 
 namespace Tests\Functional;
 
-final class ArrayTest extends FunctionalTestCase
+final class ArrayTest extends CeltricStyleFunctionalTestCase
 {
     /** @test */
     public function empty_array()

@@ -1,8 +1,8 @@
 <?php
 
-namespace tests\unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
+namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
-use Celtric\Fixtures\DefinitionLocators\FileParsers\CeltricStyleParser;
+use Celtric\Fixtures\Parsers\CeltricStyleParser;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
@@ -12,7 +12,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "null_value" => new FixtureDefinition("null", null)
-        ], $this->parseFixture("null_value:"));
+        ], $this->parse([
+            "null_value" => null
+        ]));
     }
 
     /** @test */
@@ -20,7 +22,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "empty_array" => new FixtureDefinition("array", [])
-        ], $this->parseFixture("empty_array<array>:"));
+        ], $this->parse([
+            "empty_array<array>" => null
+        ]));
     }
 
     /** @test */
@@ -33,14 +37,14 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
                 "string" => new FixtureDefinition("string", "Foo"),
                 "bool" => new FixtureDefinition("boolean", true)
             ])
-        ], $this->parseFixture(<<<YAML
-scalar_values:
-    int: 123
-    float: 123.456
-    string: "Foo"
-    bool: true
-YAML
-));
+        ], $this->parse([
+            "scalar_values" => [
+                "int" => 123,
+                "float" => 123.456,
+                "string" => "Foo",
+                "bool" => true
+            ]
+        ]));
     }
 
     /** @test */
@@ -55,14 +59,16 @@ YAML
                     ])
                 ])
             ])
-        ], $this->parseFixture(<<<YAML
-multidimensional_array:
-    foo: "bar"
-    one:
-        two:
-            three: "foobar"
-YAML
-));
+        ], $this->parse([
+            "multidimensional_array" => [
+                "foo" => "bar",
+                "one" => [
+                    "two" => [
+                        "three" => "foobar"
+                    ]
+                ]
+            ]
+        ]));
     }
 
     /** @test */
@@ -72,11 +78,11 @@ YAML
             "typed_array" => new FixtureDefinition("array", [
                 "foo" => new FixtureDefinition("string", "bar")
             ])
-        ], $this->parseFixture(<<<YAML
-typed_array<array>:
-    foo: "bar"
-YAML
-));
+        ], $this->parse([
+            "typed_array<array>" => [
+                "foo" => "bar"
+            ]
+        ]));
     }
 
     /** @test */
@@ -91,14 +97,16 @@ YAML
                     ])
                 ])
             ])
-        ], $this->parseFixture(<<<YAML
-multidimensional_typed_array<array>:
-    foo: "bar"
-    one<array>:
-        two<array>:
-            three: "foobar"
-YAML
-));
+        ], $this->parse([
+            "multidimensional_typed_array<array>" => [
+                "foo" => "bar",
+                "one<array>" => [
+                    "two<array>" => [
+                        "three" => "foobar"
+                    ]
+                ]
+            ]
+        ]));
     }
 
     /** @test */
@@ -108,11 +116,11 @@ YAML
             "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
                 "isoCode" => new FixtureDefinition("string", "EUR")
             ])
-        ], $this->parseFixture(<<<YAML
-euro<Tests\Utils\Currency>:
-    isoCode: "EUR"
-YAML
-));
+        ], $this->parse([
+            "euro<Tests\\Utils\\Currency>" => [
+                "isoCode" => "EUR"
+            ]
+        ]));
     }
 
     /** @test */
@@ -125,13 +133,14 @@ YAML
                     "isoCode" => new FixtureDefinition("string", "EUR")
                 ])
             ])
-        ], $this->parseFixture(<<<YAML
-one_euro<Tests\Utils\Money>:
-    amount: 100
-    currency<Tests\Utils\Currency>:
-        isoCode: "EUR"
-YAML
-));
+        ], $this->parse([
+            "one_euro<Tests\\Utils\\Money>" => [
+                "amount" => 100,
+                "currency<Tests\\Utils\\Currency>" => [
+                    "isoCode" => "EUR"
+                ]
+            ]
+        ]));
     }
 
     /** @test */
@@ -144,15 +153,15 @@ YAML
                     "isoCode" => new FixtureDefinition("string", "EUR")
                 ])
             ])
-        ], $this->parseFixture(<<<YAML
-root_type: Tests\Utils\Money
-
-one_euro:
-    amount: 100
-    currency<Tests\Utils\Currency>:
-        isoCode: "EUR"
-YAML
-));
+        ], $this->parse([
+            "root_type" => "Tests\\Utils\\Money",
+            "one_euro" => [
+                "amount" => 100,
+                "currency<Tests\\Utils\\Currency>" => [
+                    "isoCode" => "EUR"
+                ]
+            ]
+        ]));
     }
 
     /** @test */
@@ -162,11 +171,11 @@ YAML
             "same_file_array" => new FixtureDefinition("array", [
                 "foo" => new FixtureDefinition("reference", "references.bar")
             ])
-        ], $this->parseFixture(<<<YAML
-same_file_array:
-    foo: "@references.bar"
-YAML
-));
+        ], $this->parse([
+            "same_file_array" => [
+                "foo" => "@references.bar"
+            ]
+        ]));
     }
 
     /** @test */
@@ -185,27 +194,29 @@ YAML
                     ])
                 ])
             ])
-        ], $this->parseFixture(<<<YAML
-ref:
-    ref2: "@references.ref2"
-    name: "@references.name"
-    ref:
-        ref2: "@references.ref2"
-        name: "@references.name"
-        ref:
-            ref2: "@references.ref2"
-            name: "@references.name"
-YAML
-));
+        ], $this->parse([
+            "ref" => [
+                "ref2" => "@references.ref2",
+                "name" => "@references.name",
+                "ref" => [
+                    "ref2" => "@references.ref2",
+                    "name" => "@references.name",
+                    "ref" => [
+                        "ref2" => "@references.ref2",
+                        "name" => "@references.name"
+                    ]
+                ]
+            ]
+        ]));
     }
 
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
-     * @param string $rawData
+     * @param array $rawData
      * @return FixtureDefinition[]
      */
-    private function parseFixture($rawData)
+    private function parse(array $rawData)
     {
         return (new CeltricStyleParser())->parse($rawData);
     }

@@ -5,7 +5,7 @@ namespace Tests\Functional;
 use Tests\Utils\Currency;
 use Tests\Utils\Money;
 
-final class TypeTest extends FunctionalTestCase
+final class TypeTest extends CeltricStyleFunctionalTestCase
 {
     /** @test */
     public function simple_object()

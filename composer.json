@@ -6,6 +6,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Tests\\Unit\\": "tests/unit/",
             "Tests\\Functional\\": "tests/functional/",
             "Tests\\Utils\\": "tests/Utils/"
         }

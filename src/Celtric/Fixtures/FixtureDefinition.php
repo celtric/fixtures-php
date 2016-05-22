@@ -41,6 +41,22 @@ final class FixtureDefinition
      */
     public function isReference()
     {
-        return $this->data[0] === "@";
+        return $this->type === "reference";
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNativeValue()
+    {
+        return !$this->isReference() && (is_scalar($this->data) || is_null($this->data));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArray()
+    {
+        return $this->type === "array";
     }
 }

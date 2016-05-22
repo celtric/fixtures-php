@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Tests\Utils\Person;
 
-final class DoctrineTest extends FunctionalTestCase
+final class DoctrineTest extends CeltricStyleFunctionalTestCase
 {
     /** @test */
     public function simple_object()
