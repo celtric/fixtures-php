@@ -48,6 +48,13 @@ final class CeltricStyleParser implements FileParser
         $parsedData = [];
 
         foreach ($rawData as $key => $value) {
+            $isReference = is_string($value) && $value[0] === "@";
+
+            if ($isReference) {
+                $parsedData[$key] = new FixtureDefinition("reference", substr($value, 1));
+                continue;
+            }
+
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
                 list(, $key, $type) = $matches;
             } elseif (is_array($value)) {
@@ -55,6 +62,7 @@ final class CeltricStyleParser implements FileParser
             } else {
                 $type = $this->resolveType($value);
             }
+
             $parsedData[$key] = new FixtureDefinition($type, $this->parseData($value, $type));
         }
 

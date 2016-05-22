@@ -155,6 +155,50 @@ YAML
 ));
     }
 
+    /** @test */
+    public function simple_reference()
+    {
+        $this->assertEquals([
+            "same_file_array" => new FixtureDefinition("array", [
+                "foo" => new FixtureDefinition("reference", "references.bar")
+            ])
+        ], $this->parseFixture(<<<YAML
+same_file_array:
+    foo: "@references.bar"
+YAML
+));
+    }
+
+    /** @test */
+    public function complex_references()
+    {
+        $this->assertEquals([
+            "ref" => new FixtureDefinition("array", [
+                "ref2" => new FixtureDefinition("reference", "references.ref2"),
+                "name" => new FixtureDefinition("reference", "references.name"),
+                "ref" => new FixtureDefinition("array", [
+                    "ref2" => new FixtureDefinition("reference", "references.ref2"),
+                    "name" => new FixtureDefinition("reference", "references.name"),
+                    "ref" => new FixtureDefinition("array", [
+                        "ref2" => new FixtureDefinition("reference", "references.ref2"),
+                        "name" => new FixtureDefinition("reference", "references.name")
+                    ])
+                ])
+            ])
+        ], $this->parseFixture(<<<YAML
+ref:
+    ref2: "@references.ref2"
+    name: "@references.name"
+    ref:
+        ref2: "@references.ref2"
+        name: "@references.name"
+        ref:
+            ref2: "@references.ref2"
+            name: "@references.name"
+YAML
+));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
