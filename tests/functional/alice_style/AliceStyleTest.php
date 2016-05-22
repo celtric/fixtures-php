@@ -21,6 +21,7 @@ final class AliceStyleTest extends AliceStyleFunctionalTestCase
     {
         $person = new Person("Ricard", 30);
         $person->setFriend(new Person("Phteven", 8));
+        $person->setCoordinates(1, 2, 3);
 
         $this->assertEquals($person, $this->fixture("alice_style.people.ricard_with_late_friend"));
     }

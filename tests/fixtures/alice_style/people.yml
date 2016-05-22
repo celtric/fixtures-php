@@ -4,6 +4,7 @@ Tests\Utils\Person:
         name: "Ricard"
         age: 30
         setFriend: ["@alice_style.people.phteven"]
+        setCoordinates: [1, 2, 3]
 
     phteven:
         name: "Phteven"

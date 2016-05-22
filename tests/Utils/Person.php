@@ -16,6 +16,15 @@ final class Person
     /** @var Person|null */
     private $friend;
 
+    /** @var int */
+    private $x;
+
+    /** @var int */
+    private $y;
+
+    /** @var int */
+    private $z;
+
     /**
      * @param string $name
      * @param int $age
@@ -40,5 +49,17 @@ final class Person
     public function setFriend(Person $friend)
     {
         $this->friend = $friend;
+    }
+
+    /**
+     * @param int $x
+     * @param int $y
+     * @param int $z
+     */
+    public function setCoordinates($x, $y, $z)
+    {
+        $this->x = $x;
+        $this->y = $y;
+        $this->z = $z;
     }
 }
