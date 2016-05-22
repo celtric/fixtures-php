@@ -52,6 +52,15 @@ final class CeltricStyleParser implements RawDataParser
                 continue;
             }
 
+            $isMethod = method_exists($defaultType, $key);
+
+            if ($isMethod) {
+                $parsedData[$key] = new FixtureDefinition(
+                        "method_call",
+                        $this->parseData(is_array($value) ? $value : [$value], "array"));
+                continue;
+            }
+
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
                 list(, $key, $type) = $matches;
             } elseif (is_array($value)) {

@@ -9,6 +9,12 @@ ricard_with_friend:
     age: 30
     friend: "@company.people.phteven"
 
+ricard_with_late_friend:
+    name: "Ricard"
+    age: 30
+    setFriend: ["@company.people.phteven"]
+    setCoordinates: [1, 2, 3]
+
 phteven:
     name: "Phteven"
     age: 8

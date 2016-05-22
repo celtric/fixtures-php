@@ -210,6 +210,48 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
+    /** @test */
+    public function method_call()
+    {
+        $this->assertEquals([
+            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
+                "setFriend" => new FixtureDefinition("method_call", [
+                    new FixtureDefinition("string", "a_friend")
+                ])
+            ]),
+            "another_person" => new FixtureDefinition("Tests\\Utils\\Person", [
+                "setFriend" => new FixtureDefinition("method_call", [
+                    new FixtureDefinition("string", "a_friend")
+                ])
+            ])
+        ], $this->parse([
+            "a_person<Tests\\Utils\\Person>" => [
+                "setFriend" => "a_friend"
+            ],
+            "another_person<Tests\\Utils\\Person>" => [
+                "setFriend" => ["a_friend"]
+            ]
+        ]));
+    }
+
+    /** @test */
+    public function method_call_with_reference()
+    {
+        $this->assertEquals([
+            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
+                "setFriend" => new FixtureDefinition("method_call", [
+                    new FixtureDefinition("reference", "a_friend")
+                ])
+            ])
+        ], $this->parse([
+            "a_person<Tests\\Utils\\Person>" => [
+                "setFriend" => [
+                    "@a_friend"
+                ]
+            ]
+        ]));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
