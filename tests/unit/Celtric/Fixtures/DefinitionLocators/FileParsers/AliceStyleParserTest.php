@@ -81,6 +81,23 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
+    /** @test */
+    public function range()
+    {
+        $this->assertEquals([
+            "definition_0" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
+            "definition_1" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
+            "definition_2" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
+            "definition_3" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")])
+        ], $this->parse([
+            "stdClass" => [
+                "definition_{0..3}" => [
+                    "foo" => "bar"
+                ]
+            ]
+        ]));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**

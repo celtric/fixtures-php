@@ -15,7 +15,6 @@ final class FixtureInstantiator
         $this->referenceLocator = $referenceLocator;
     }
 
-
     /**
      * @param FixtureDefinition $fixtureDefinition
      * @return mixed

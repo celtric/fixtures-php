@@ -16,6 +16,20 @@ final class AliceStyleParser implements RawDataParser
 
         foreach ($rawData as $type => $typeRawDefinitions) {
             foreach ($typeRawDefinitions as $name => $values) {
+                $isRange = preg_match("/(.*)\\{(\\d+)(\\.{2,})(\\d+)\\}/i", $name, $matches);
+                
+                if ($isRange) {
+                    $baseName = $matches[1];
+                    $from = $matches[2];
+                    $to = $matches[4];
+
+                    foreach (range($from, $to) as $i) {
+                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($values));
+                    }
+
+                    continue;
+                }
+
                 $definitions[$name] = new FixtureDefinition($type, $this->parseValues($values));
             }
         }
