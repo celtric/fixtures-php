@@ -1,6 +1,6 @@
 <?php
 
-namespace Celtric\Fixtures\DefinitionsLocators;
+namespace Celtric\Fixtures\DefinitionLocators;
 
 use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;

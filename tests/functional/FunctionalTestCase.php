@@ -2,7 +2,7 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\DefinitionsLocators\FileDefinitionLocator;
+use Celtric\Fixtures\DefinitionLocators\FileDefinitionLocator;
 use Celtric\Fixtures\Fixtures;
 
 abstract class FunctionalTestCase extends \PHPUnit_Framework_TestCase
