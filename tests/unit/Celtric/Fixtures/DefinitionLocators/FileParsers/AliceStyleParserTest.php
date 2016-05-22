@@ -58,7 +58,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
             ]),
             "dollar" => new FixtureDefinition("Tests\\Utils\\Currency", [
                 "isoCode" => new FixtureDefinition("string", "USD")
-            ]),
+            ])
         ], $this->parse([
             "Tests\\Utils\\Money" => [
                 "one_euro" => [

@@ -5,7 +5,7 @@ interface DefinitionLocator
 {
     /**
      * @param FixtureIdentifier $fixtureIdentifier
-     * @return FixtureDefinition[]
+     * @return FixtureDefinition
      */
     public function locate(FixtureIdentifier $fixtureIdentifier);
 }

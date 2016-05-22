@@ -7,21 +7,21 @@ use Celtric\Fixtures\FixtureIdentifier;
 use Celtric\Fixtures\RawDataLocator;
 use Celtric\Fixtures\RawDataParser;
 
-final class SingleParserDefinitionLocator implements DefinitionLocator
+final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
 {
-    /** @var RawDataParser */
-    private $parser;
+    /** @var RawDataParser[] */
+    private $parsers;
 
     /** @var RawDataLocator */
     private $rawDataLocator;
 
     /**
      * @param RawDataLocator $rawDataLocator
-     * @param RawDataParser $parser
+     * @param RawDataParser[] $parsers
      */
-    public function __construct(RawDataLocator $rawDataLocator, RawDataParser $parser)
+    public function __construct(RawDataLocator $rawDataLocator, array $parsers)
     {
-        $this->parser = $parser;
+        $this->parsers = $parsers;
         $this->rawDataLocator = $rawDataLocator;
     }
 
@@ -32,7 +32,12 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
     {
         $rawData = $this->rawDataLocator->locate($fixtureIdentifier);
 
-        $definitions = $this->parser->parse($rawData);
+        foreach ($this->parsers as $namespaceMatcher => $parser) {
+            if (preg_match($namespaceMatcher, $fixtureIdentifier->getNamespace())) {
+                $definitions = $parser->parse($rawData);
+                break;
+            }
+        }
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");
