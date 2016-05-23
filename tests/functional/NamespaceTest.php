@@ -13,7 +13,6 @@ final class NamespaceTest extends CeltricStyleFunctionalTestCase
             "float" => 123.456,
             "string" => "Foo",
             "boolean" => true
-        ], $this->loadNamespace("scalar"));
+        ], $this->namespaceFixtures("scalar"));
     }
-
 }

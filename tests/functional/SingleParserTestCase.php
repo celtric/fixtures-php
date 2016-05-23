@@ -13,7 +13,7 @@ abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
      * @param string $fixtureIdentifier
      * @return mixed
      */
-    protected function loadFixture($fixtureIdentifier)
+    protected function fixture($fixtureIdentifier)
     {
         return $this->fixtures()->fixture($fixtureIdentifier);
     }
@@ -22,7 +22,7 @@ abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
      * @param string $namespace
      * @return array
      */
-    protected function loadNamespace($namespace)
+    protected function namespaceFixtures($namespace)
     {
         return $this->fixtures()->namespaceFixtures($namespace);
     }
@@ -30,7 +30,7 @@ abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @return Fixtures
      */
-    protected function fixtures()
+    private function fixtures()
     {
         return new Fixtures(
                 new SingleParserDefinitionLocator(

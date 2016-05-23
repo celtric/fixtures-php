@@ -12,8 +12,8 @@ final class AliceStyleTest extends AliceStyleFunctionalTestCase
     /** @test */
     public function complex_objects_spanning_different_namespaces()
     {
-        $this->assertEquals(new Money(100, new Currency("EUR")), $this->loadFixture("alice_style.money.one_euro"));
-        $this->assertEquals(new Money(200, new Currency("USD")), $this->loadFixture("alice_style.money.two_dollars"));
+        $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("alice_style.money.one_euro"));
+        $this->assertEquals(new Money(200, new Currency("USD")), $this->fixture("alice_style.money.two_dollars"));
     }
 
     /** @test */
@@ -23,6 +23,6 @@ final class AliceStyleTest extends AliceStyleFunctionalTestCase
         $person->setFriend(new Person("Phteven", 8));
         $person->setCoordinates(1, 2, 3);
 
-        $this->assertEquals($person, $this->loadFixture("alice_style.people.ricard_with_late_friend"));
+        $this->assertEquals($person, $this->fixture("alice_style.people.ricard_with_late_friend"));
     }
 }

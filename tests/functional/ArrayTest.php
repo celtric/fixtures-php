@@ -7,7 +7,7 @@ final class ArrayTest extends CeltricStyleFunctionalTestCase
     /** @test */
     public function empty_array()
     {
-        $this->assertEquals([], $this->loadFixture("arrays.empty"));
+        $this->assertEquals([], $this->fixture("arrays.empty"));
     }
 
     /** @test */
@@ -18,13 +18,13 @@ final class ArrayTest extends CeltricStyleFunctionalTestCase
             "float" => 123.456,
             "string" => "Foo",
             "bool" => true
-        ], $this->loadFixture("arrays.scalar_values"));
+        ], $this->fixture("arrays.scalar_values"));
     }
 
     /** @test */
     public function lists()
     {
-        $this->assertEquals([1, 2, 3, [4, 5, [6, 7]]], $this->loadFixture("arrays.lists"));
+        $this->assertEquals([1, 2, 3, [4, 5, [6, 7]]], $this->fixture("arrays.lists"));
     }
 
     /** @test */
@@ -37,7 +37,7 @@ final class ArrayTest extends CeltricStyleFunctionalTestCase
                     "three" => "foobar"
                 ]
             ]
-        ], $this->loadFixture("arrays.multidimensional"));
+        ], $this->fixture("arrays.multidimensional"));
     }
 
     /** @test */
@@ -45,7 +45,7 @@ final class ArrayTest extends CeltricStyleFunctionalTestCase
     {
         $this->assertEquals([
             "foo" => "bar"
-        ], $this->loadFixture("arrays.typed_array"));
+        ], $this->fixture("arrays.typed_array"));
     }
 
     /** @test */
@@ -58,6 +58,6 @@ final class ArrayTest extends CeltricStyleFunctionalTestCase
                     "three" => "foobar"
                 ]
             ]
-        ], $this->loadFixture("arrays.multidimensional_typed_array"));
+        ], $this->fixture("arrays.multidimensional_typed_array"));
     }
 }
