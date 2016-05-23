@@ -6,7 +6,7 @@ use Tests\Utils\Currency;
 use Tests\Utils\Money;
 use Tests\Utils\Person;
 
-final class ReferenceTest extends FunctionalTestCase
+final class ReferenceTest extends CeltricStyleFunctionalTestCase
 {
     /** @test */
     public function same_file_array()

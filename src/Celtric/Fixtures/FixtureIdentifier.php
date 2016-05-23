@@ -5,47 +5,47 @@ namespace Celtric\Fixtures;
 final class FixtureIdentifier
 {
     /** @var string */
+    private $stringRepresentation;
+
+    /** @var string */
     private $namespace;
 
     /** @var string */
-    private $fixtureName;
+    private $name;
 
     /**
-     * @param string $namespace
-     * @param string $fixtureName
+     * @param string $stringRepresentation
      */
-    public function __construct($namespace, $fixtureName)
+    public function __construct($stringRepresentation)
     {
-        $this->namespace = $namespace;
-        $this->fixtureName = $fixtureName;
-    }
-
-    /**
-     * @param string $fullFixtureName
-     * @return FixtureIdentifier
-     */
-    public static function fromFullFixtureName($fullFixtureName)
-    {
-        $fixtureName = array_reverse(explode(".", $fullFixtureName))[0];
-        $namespace = substr($fullFixtureName, 0, strlen($fullFixtureName) - strlen($fixtureName) - 1);
-
-        return new self($namespace, $fixtureName);
+        $this->stringRepresentation = $stringRepresentation;
+        $this->name = array_reverse(explode(".", $stringRepresentation))[0];
+        $this->namespace = substr($stringRepresentation, 0, strlen($stringRepresentation) - strlen($this->name) - 1);
     }
 
     /**
      * @return string
      */
-    public function fixtureName()
+    public function name()
     {
-        return $this->fixtureName;
+        return $this->name;
     }
 
     /**
-     * @param string $rootPath
+     * Prefixed with "get" because namespace is a reserved word.
+     *
      * @return string
      */
-    public function toFilePath($rootPath)
+    public function getNamespace()
     {
-        return $rootPath . str_replace(".", DIRECTORY_SEPARATOR, $this->namespace) . ".yml";
+        return $this->namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function toString()
+    {
+        return $this->stringRepresentation;
     }
 }

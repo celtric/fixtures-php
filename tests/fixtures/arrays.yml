@@ -1,4 +1,4 @@
-empty:
+empty<array>:
 
 scalar_values:
     int: 123

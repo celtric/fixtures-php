@@ -1,0 +1,11 @@
+Tests\Utils\Person:
+
+    ricard_with_late_friend:
+        name: "Ricard"
+        age: 30
+        setFriend: ["@alice_style.people.phteven"]
+        setCoordinates: [1, 2, 3]
+
+    phteven:
+        name: "Phteven"
+        age: 8

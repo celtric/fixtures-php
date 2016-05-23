@@ -2,8 +2,14 @@
 
 namespace Tests\Functional;
 
-final class ScalarTest extends FunctionalTestCase
+final class ScalarTest extends CeltricStyleFunctionalTestCase
 {
+    /** @test */
+    public function null()
+    {
+        $this->assertNull($this->fixture("scalar.null_value"));
+    }
+
     /** @test */
     public function integer()
     {
@@ -25,6 +31,6 @@ final class ScalarTest extends FunctionalTestCase
     /** @test */
     public function boolean()
     {
-        $this->assertSame(true, $this->fixture("scalar.boolean"));
+        $this->assertTrue($this->fixture("scalar.boolean"));
     }
 }
