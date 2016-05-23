@@ -19,23 +19,32 @@ final class Fixtures
      * @param string $fullFixtureName
      * @return mixed
      */
-    public function loadFixture($fullFixtureName)
+    public function fixture($fullFixtureName)
     {
         $fixtureIdentifier = new FixtureIdentifier($fullFixtureName);
 
-        $definition = $this->definitionLocator->locate($fixtureIdentifier);
+        $definition = $this->definitionLocator->retrieveFixtureDefinition($fixtureIdentifier);
 
-        return (new FixtureInstantiator($this->definitionLocator))->instantiate($definition);
+        return $this->instantiate($definition);
     }
 
     /**
-     * TODO: implement
-     *
      * @param string $namespace
      * @return array
      */
-    public function loadNamespace($namespace)
+    public function namespaceFixtures($namespace)
     {
-        throw new \RuntimeException("Not implemented");
+        $definitions = $this->definitionLocator->retrieveNamespaceDefinitions($namespace);
+
+        return array_map([$this, "instantiate"], $definitions);
+    }
+
+    /**
+     * @param $definition
+     * @return mixed
+     */
+    private function instantiate($definition)
+    {
+        return (new FixtureInstantiator($this->definitionLocator))->instantiate($definition);
     }
 }

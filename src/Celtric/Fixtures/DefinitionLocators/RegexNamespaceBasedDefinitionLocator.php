@@ -28,21 +28,30 @@ final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
     /**
      * @inheritDoc
      */
-    public function locate(FixtureIdentifier $fixtureIdentifier)
+    public function retrieveFixtureDefinition(FixtureIdentifier $fixtureIdentifier)
     {
-        $rawData = $this->rawDataLocator->locate($fixtureIdentifier);
-
-        foreach ($this->parsers as $namespaceMatcher => $parser) {
-            if (preg_match($namespaceMatcher, $fixtureIdentifier->getNamespace())) {
-                $definitions = $parser->parse($rawData);
-                break;
-            }
-        }
+        $definitions = $this->retrieveNamespaceDefinitions($fixtureIdentifier->getNamespace());
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");
         }
 
         return $definitions[$fixtureIdentifier->name()];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function retrieveNamespaceDefinitions($namespace)
+    {
+        $rawData = $this->rawDataLocator->retrieveRawData($namespace);
+
+        foreach ($this->parsers as $namespaceMatcher => $parser) {
+            if (preg_match($namespaceMatcher, $namespace)) {
+                return $parser->parse($rawData);
+            }
+        }
+
+        throw new \RuntimeException("No parser found for namespace \"{$namespace}\"");
     }
 }

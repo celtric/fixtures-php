@@ -11,7 +11,7 @@ final class DoctrineTest extends CeltricStyleFunctionalTestCase
     /** @test */
     public function simple_object()
     {
-        $this->assertPersistedEquals(new Person("Ricard", 30), $this->fixture("company.people.ricard"));
+        $this->assertPersistedEquals(new Person("Ricard", 30), $this->loadFixture("company.people.ricard"));
     }
 
     /** @test */
@@ -22,7 +22,7 @@ final class DoctrineTest extends CeltricStyleFunctionalTestCase
         $expected = new Person("Ricard", 30);
         $expected->setFriend(new Person("Phteven", 8));
 
-        $this->assertPersistedEquals($expected, $this->fixture("company.people.ricard_with_friend"));
+        $this->assertPersistedEquals($expected, $this->loadFixture("company.people.ricard_with_friend"));
     }
 
     //---[ Helpers ]--------------------------------------------------------------------//
@@ -74,9 +74,9 @@ final class DoctrineTest extends CeltricStyleFunctionalTestCase
     /**
      * @inheritDoc
      */
-    protected function fixture($fixtureIdentifier)
+    protected function loadFixture($fixtureIdentifier)
     {
-        $fixture = parent::fixture($fixtureIdentifier);
+        $fixture = parent::loadFixture($fixtureIdentifier);
 
         static::$em->persist($fixture);
         static::$em->flush();

@@ -63,7 +63,8 @@ final class FixtureInstantiator
      */
     private function instantiateReference(FixtureDefinition $fixtureDefinition)
     {
-        return $this->instantiate($this->referenceLocator->locate(new FixtureIdentifier($fixtureDefinition->data())));
+        return $this->instantiate(
+                $this->referenceLocator->retrieveFixtureDefinition(new FixtureIdentifier($fixtureDefinition->data())));
     }
 
     /**

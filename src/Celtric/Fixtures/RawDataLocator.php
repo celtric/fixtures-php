@@ -5,8 +5,8 @@ namespace Celtric\Fixtures;
 interface RawDataLocator
 {
     /**
-     * @param FixtureIdentifier $fixtureIdentifier
+     * @param string $namespace
      * @return array
      */
-    public function locate(FixtureIdentifier $fixtureIdentifier);
+    public function retrieveRawData($namespace);
 }

@@ -28,16 +28,24 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
     /**
      * @inheritDoc
      */
-    public function locate(FixtureIdentifier $fixtureIdentifier)
+    public function retrieveFixtureDefinition(FixtureIdentifier $fixtureIdentifier)
     {
-        $rawData = $this->rawDataLocator->locate($fixtureIdentifier);
-
-        $definitions = $this->parser->parse($rawData);
+        $definitions = $this->retrieveNamespaceDefinitions($fixtureIdentifier->getNamespace());
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");
         }
 
         return $definitions[$fixtureIdentifier->name()];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function retrieveNamespaceDefinitions($namespace)
+    {
+        $rawData = $this->rawDataLocator->retrieveRawData($namespace);
+
+        return $this->parser->parse($rawData);
     }
 }

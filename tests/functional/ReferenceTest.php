@@ -15,7 +15,7 @@ final class ReferenceTest extends CeltricStyleFunctionalTestCase
             "foo" => [
                 "fullName" => "FooBar"
             ]
-        ], $this->fixture("references.same_file_array"));
+        ], $this->loadFixture("references.same_file_array"));
     }
 
     /** @test */
@@ -56,7 +56,7 @@ final class ReferenceTest extends CeltricStyleFunctionalTestCase
                     "name" => "Ricard"
                 ]
             ]
-        ], $this->fixture("references.ref"));
+        ], $this->loadFixture("references.ref"));
     }
 
     /** @test */
@@ -65,6 +65,6 @@ final class ReferenceTest extends CeltricStyleFunctionalTestCase
         $this->assertEquals([
             "person" => new Person("Ricard", 30),
             "balance" => new Money(100, new Currency("EUR"))
-        ], $this->fixture("references.external_file_different_namespaces"));
+        ], $this->loadFixture("references.external_file_different_namespaces"));
     }
 }

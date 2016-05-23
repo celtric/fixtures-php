@@ -3,3 +3,7 @@ root_type: Tests\Utils\Money
 one_euro:
     amount: 100
     currency: "@alice_style.currencies.currency.euro"
+
+two_dollars:
+    amount: 200
+    currency: "@alice_style.currencies.currency.dollar"
