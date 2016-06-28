@@ -4,6 +4,7 @@ namespace Celtric\Fixtures\Parsers;
 
 use Celtric\Fixtures\RawDataParser;
 use Celtric\Fixtures\FixtureDefinition;
+use phpDocumentor\Reflection\DocBlock;
 
 final class CeltricStyleParser implements RawDataParser
 {
@@ -24,15 +25,16 @@ final class CeltricStyleParser implements RawDataParser
             $rootType = self::DEFAULT_TYPE;
         }
 
-        return $this->parseData($rawData, $rootType);
+        return $this->parseData($rawData, $rootType, true);
     }
 
     /**
      * @param mixed $rawData
      * @param string $defaultType
+     * @param bool $isRoot
      * @return FixtureDefinition[]
      */
-    private function parseData($rawData, $defaultType)
+    private function parseData($rawData, $defaultType, $isRoot)
     {
         if (!is_array($rawData)) {
             if ($defaultType === "array") {
@@ -57,19 +59,23 @@ final class CeltricStyleParser implements RawDataParser
             if ($isMethod) {
                 $parsedData[$key] = new FixtureDefinition(
                         "method_call",
-                        $this->parseData(is_array($value) ? $value : [$value], "array"));
+                        $this->parseData(is_array($value) ? $value : [$value], "array", false));
                 continue;
             }
 
             if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
                 list(, $key, $type) = $matches;
             } elseif (is_array($value)) {
-                $type = $defaultType;
+                if ($isRoot) {
+                    $type = $defaultType;
+                } else {
+                    $type = $this->resolveCustomType($defaultType, $key);
+                }
             } else {
-                $type = $this->resolveType($value);
+                $type = $this->resolveNativeType($value);
             }
 
-            $parsedData[$key] = new FixtureDefinition($type, $this->parseData($value, $type));
+            $parsedData[$key] = new FixtureDefinition($type, $this->parseData($value, $type, false));
         }
 
         return $parsedData;
@@ -79,7 +85,7 @@ final class CeltricStyleParser implements RawDataParser
      * @param mixed $value
      * @return string
      */
-    private function resolveType($value)
+    private function resolveNativeType($value)
     {
         $nativeType = strtolower(gettype($value));
 
@@ -88,5 +94,34 @@ final class CeltricStyleParser implements RawDataParser
         }
 
         return $nativeType;
+    }
+
+    /**
+     * @param string $parentType
+     * @param string $propertyName
+     * @return string
+     */
+    private function resolveCustomType($parentType, $propertyName)
+    {
+        if ($parentType === "array") {
+            return "array";
+        }
+
+        $comment = (new \ReflectionProperty($parentType, $propertyName))->getDocComment();
+
+        if (empty($comment)) {
+            return "array";
+        }
+
+        $docBlock = new DocBlock($comment);
+        $tags = $docBlock->getTagsByName("var");
+
+        if (empty($tags)) {
+            return "array";
+        }
+
+        $namespace = (new \ReflectionClass($parentType))->getNamespaceName();
+
+        return "{$namespace}\\{$tags[0]->getContent()}";
     }
 }

@@ -22,3 +22,8 @@ many_moneys:
             amount: 200
             currency<Tests\Utils\Currency>:
                 isoCode: "USD"
+
+one_euro_without_currency_type<Tests\Utils\Money>:
+    amount: 100
+    currency:
+        isoCode: "EUR"

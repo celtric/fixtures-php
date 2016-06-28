@@ -252,6 +252,30 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
+    /**
+     * TODO: mock docblock parser, don't use filesystem in unit test
+     *
+     * @test
+     */
+    public function can_derive_type_from_property_docblock()
+    {
+        $this->assertEquals([
+            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
+                "amount" => new FixtureDefinition("integer", 100),
+                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
+                    "isoCode" => new FixtureDefinition("string", "EUR")
+                ])
+            ])
+        ], $this->parse([
+            "one_euro<Tests\\Utils\\Money>" => [
+                "amount" => 100,
+                "currency" => [
+                    "isoCode" => "EUR"
+                ]
+            ]
+        ]));
+    }
+
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
