@@ -99,23 +99,6 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function range()
-    {
-        $this->assertEquals([
-            "definition_0" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
-            "definition_1" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
-            "definition_2" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
-            "definition_3" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")])
-        ], $this->parse([
-            "stdClass" => [
-                "definition_{0..3}" => [
-                    "foo" => "bar"
-                ]
-            ]
-        ]));
-    }
-
-    /** @test */
     public function custom_list()
     {
         $this->assertEquals([
