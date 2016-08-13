@@ -12,28 +12,6 @@ use Celtric\Fixtures\FixtureTypes\ReferenceFixture;
 class FixtureDefinitionFactory
 {
     /**
-     * @param string $type
-     * @param mixed $data
-     * @return FixtureDefinition
-     * @deprecated
-     */
-    public function generic($type, $data)
-    {
-        switch (true) {
-            case $type === "null":
-                return $this->null();
-            case is_scalar($data):
-                return $this->scalar($data);
-            case $type === "array":
-                return $this->arr($data);
-            case $type === "method_call":
-                return $this->methodCall($data);
-            default:
-                return $this->object($type, $data);
-        }
-    }
-
-    /**
      * @return FixtureDefinition
      */
     public function null()

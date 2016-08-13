@@ -35,12 +35,23 @@ final class AliceStyleParser implements RawDataParser
                     $baseName = $matches[1];
                     $from = $matches[2];
                     $to = $matches[4];
+                    $parsedValue = $this->parseValues($type, $values, $definitionLocator);
 
                     foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues(
-                                $type,
-                                $values,
-                                $definitionLocator));
+                        switch (true) {
+                            case is_null($parsedValue):
+                                $definitions[$baseName . $i] = $this->definitionFactory->null();
+                                break;
+                            case is_scalar($parsedValue):
+                                $definitions[$baseName . $i] = $this->definitionFactory->scalar($parsedValue);
+                                break;
+                            case $type === "array":
+                                $definitions[$baseName . $i] = $this->definitionFactory->arr($parsedValue);
+                                break;
+                            default:
+                                $definitions[$baseName . $i] = $this->definitionFactory->object($type, $parsedValue);
+                                break;
+                        }
                     }
 
                     continue;
@@ -57,16 +68,43 @@ final class AliceStyleParser implements RawDataParser
                             return str_replace("<current()>", $i, $value);
                         }, $values);
 
-                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues(
-                                $type,
-                                $itemValues,
-                                $definitionLocator));
+                        $parsedValue = $this->parseValues($type, $itemValues, $definitionLocator);
+
+                        switch (true) {
+                            case is_null($parsedValue):
+                                $definitions[$baseName . $i] = $this->definitionFactory->null();
+                                break;
+                            case is_scalar($parsedValue):
+                                $definitions[$baseName . $i] = $this->definitionFactory->scalar($parsedValue);
+                                break;
+                            case $type === "array":
+                                $definitions[$baseName . $i] = $this->definitionFactory->arr($parsedValue);
+                                break;
+                            default:
+                                $definitions[$baseName . $i] = $this->definitionFactory->object($type, $parsedValue);
+                                break;
+                        }
                     }
 
                     continue;
                 }
 
-                $definitions[$name] = $this->definitionFactory->generic($type, $this->parseValues($type, $values, $definitionLocator));
+                $parsedValue = $this->parseValues($type, $values, $definitionLocator);
+
+                switch (true) {
+                    case is_null($parsedValue):
+                        $definitions[$name] = $this->definitionFactory->null();
+                        break;
+                    case is_scalar($parsedValue):
+                        $definitions[$name] = $this->definitionFactory->scalar($parsedValue);
+                        break;
+                    case $type === "array":
+                        $definitions[$name] = $this->definitionFactory->arr($parsedValue);
+                        break;
+                    default:
+                        $definitions[$name] = $this->definitionFactory->object($type, $parsedValue);
+                        break;
+                }
             }
         }
 
@@ -101,7 +139,20 @@ final class AliceStyleParser implements RawDataParser
                 continue;
             }
 
-            $parsedValues[$key] = $this->definitionFactory->generic($this->resolveType($value), $value);
+            switch (true) {
+                case is_null($value):
+                    $parsedValues[$key] = $this->definitionFactory->null();
+                    break;
+                case is_scalar($value):
+                    $parsedValues[$key] = $this->definitionFactory->scalar($value);
+                    break;
+                case $this->resolveType($value) === "array":
+                    $parsedValues[$key] = $this->definitionFactory->arr($value);
+                    break;
+                default:
+                    $parsedValues[$key] = $this->definitionFactory->object($type, $value);
+                    break;
+            }
         }
 
         return $parsedValues;

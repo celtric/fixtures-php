@@ -82,10 +82,22 @@ final class CeltricStyleParser implements RawDataParser
                 $type = $this->resolveType($value);
             }
 
-            $parsedData[$key] = $this->definitionFactory->generic($type, $this->parseData(
-                    $value,
-                    $type,
-                    $definitionLocator));
+            $parsedValue = $this->parseData($value, $type, $definitionLocator);
+
+            switch (true) {
+                case is_null($parsedValue):
+                    $parsedData[$key] = $this->definitionFactory->null();
+                    break;
+                case is_scalar($parsedValue):
+                    $parsedData[$key] = $this->definitionFactory->scalar($parsedValue);
+                    break;
+                case $type === "array":
+                    $parsedData[$key] = $this->definitionFactory->arr($parsedValue);
+                    break;
+                default:
+                    $parsedData[$key] = $this->definitionFactory->object($type, $parsedValue);
+                    break;
+            }
         }
 
         return $parsedData;
