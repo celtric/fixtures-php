@@ -14,6 +14,7 @@ class FixtureDefinitionFactory
      * @param string $type
      * @param mixed $data
      * @return FixtureDefinition
+     * @deprecated
      */
     public function generic($type, $data)
     {
