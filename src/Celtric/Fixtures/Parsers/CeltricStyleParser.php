@@ -37,7 +37,7 @@ final class CeltricStyleParser implements RawDataParser
             unset($rawData["root_type"]);
         }
 
-        return $this->recursiveParser($rawData, $rootType, $definitionLocator);
+        return $this->parseRecursively($rawData, $rootType, $definitionLocator);
     }
 
     /**
@@ -46,7 +46,7 @@ final class CeltricStyleParser implements RawDataParser
      * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition[]
      */
-    private function recursiveParser($rawData, $defaultType, DefinitionLocator $definitionLocator)
+    private function parseRecursively($rawData, $defaultType, DefinitionLocator $definitionLocator)
     {
         if (!is_array($rawData)) {
             if ($defaultType === "array") {
@@ -68,7 +68,7 @@ final class CeltricStyleParser implements RawDataParser
                     break;
                 case $isMethod:
                     $definition = $this->definitionFactory->methodCall(
-                            $this->recursiveParser(is_array($value) ? $value : [$value], "array", $definitionLocator));
+                            $this->parseRecursively(is_array($value) ? $value : [$value], "array", $definitionLocator));
                     break;
                 default:
                     $type = null;
@@ -79,7 +79,7 @@ final class CeltricStyleParser implements RawDataParser
                         $type = $defaultType;
                     }
 
-                    $definition = $this->toDefinition($type, $this->recursiveParser($value, $type, $definitionLocator));
+                    $definition = $this->toDefinition($type, $this->parseRecursively($value, $type, $definitionLocator));
             }
 
             $parsedData[$key] = $definition;
