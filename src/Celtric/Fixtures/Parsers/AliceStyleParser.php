@@ -29,38 +29,6 @@ final class AliceStyleParser implements RawDataParser
 
         foreach ($rawData as $type => $typeRawDefinitions) {
             foreach ($typeRawDefinitions as $name => $values) {
-                $isCustomList = preg_match("/(.*)\\{([^,]+(\\s*,\\s*[^,]+)*)\\}/", $name, $matches);
-
-                if ($isCustomList) {
-                    $baseName = $matches[1];
-                    $listItems = array_map("trim", explode(",", $matches[2]));
-
-                    foreach ($listItems as $i) {
-                        $itemValues = array_map(function($value) use ($i) {
-                            return str_replace("<current()>", $i, $value);
-                        }, $values);
-
-                        $parsedValue = $this->parseValues($type, $itemValues, $definitionLocator);
-
-                        switch (true) {
-                            case is_null($parsedValue):
-                                $definitions[$baseName . $i] = $this->definitionFactory->null();
-                                break;
-                            case is_scalar($parsedValue):
-                                $definitions[$baseName . $i] = $this->definitionFactory->scalar($parsedValue);
-                                break;
-                            case $type === "array":
-                                $definitions[$baseName . $i] = $this->definitionFactory->arr($parsedValue);
-                                break;
-                            default:
-                                $definitions[$baseName . $i] = $this->definitionFactory->object($type, $parsedValue);
-                                break;
-                        }
-                    }
-
-                    continue;
-                }
-
                 $parsedValue = $this->parseValues($type, $values, $definitionLocator);
 
                 switch (true) {

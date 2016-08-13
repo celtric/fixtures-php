@@ -99,28 +99,6 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function custom_list()
-    {
-        $this->assertEquals([
-            "definition_option_a" => $this->definitionFactory->object("stdClass", [
-                "complete" => $this->definitionFactory->scalar("option_a"),
-                "partial" => $this->definitionFactory->scalar("option_a@foo")
-            ]),
-            "definition_option_b" => $this->definitionFactory->object("stdClass", [
-                "complete" => $this->definitionFactory->scalar("option_b"),
-                "partial" => $this->definitionFactory->scalar("option_b@foo")
-            ])
-        ], $this->parse([
-            "stdClass" => [
-                "definition_{option_a, option_b}" => [
-                    "complete" => "<current()>",
-                    "partial" => "<current()>@foo"
-                ]
-            ]
-        ]));
-    }
-
-    /** @test */
     public function method_call()
     {
         $this->assertEquals([
