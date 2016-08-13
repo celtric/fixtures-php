@@ -22,12 +22,6 @@ final class MethodCallFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        $instantiatedData = [];
-
-        foreach ($this->arguments as $key => $value) {
-            $instantiatedData[$key] = $value->instantiate();
-        }
-
-        return $instantiatedData;
+        return (new ArrayFixture($this->arguments))->instantiate();
     }
 }
