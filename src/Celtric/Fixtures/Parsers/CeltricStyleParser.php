@@ -48,54 +48,78 @@ final class CeltricStyleParser implements RawDataParser
      */
     private function parseRecursively($rawData, $defaultType, DefinitionLocator $definitionLocator)
     {
-        if (!is_array($rawData)) {
-            if ($defaultType === "array") {
-                return (array) $rawData;
-            } else {
-                return $rawData;
-            }
-        }
+        return is_array($rawData)
+                ? $this->parseArrayRawData($rawData, $defaultType, $definitionLocator)
+                : $this->parseNonArrayRawData($rawData, $defaultType);
+    }
 
+    /**
+     * @param mixed $rawData
+     * @param $defaultType
+     * @return mixed
+     */
+    private function parseNonArrayRawData($rawData, $defaultType)
+    {
+        return $defaultType === "array" ? (array) $rawData : $rawData;
+    }
+
+    /**
+     * @param array $rawData
+     * @param string $defaultType
+     * @param DefinitionLocator $definitionLocator
+     * @return array
+     */
+    private function parseArrayRawData(array $rawData, $defaultType, DefinitionLocator $definitionLocator)
+    {
         $parsedData = [];
 
         foreach ($rawData as $key => $value) {
-            $isReference = is_string($value) && $value[0] === "@";
-            $isMethod = method_exists($defaultType, $key);
-
-            switch (true) {
-                case $isReference:
-                    $definition = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
-                    break;
-                case $isMethod:
-                    $definition = $this->definitionFactory->methodCall(
-                            $this->parseRecursively(is_array($value) ? $value : [$value], "array", $definitionLocator));
-                    break;
-                default:
-                    $type = null;
-
-                    if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                        list(, $key, $type) = $matches;
-                    } elseif (is_array($value)) {
-                        $type = $defaultType;
-                    }
-
-                    $definition = $this->toDefinition($type, $this->parseRecursively($value, $type, $definitionLocator));
-            }
-
-            $parsedData[$key] = $definition;
+            $parsedData[$this->fixtureNameWithoutType($key)] = $this->toDefinition(
+                    $key,
+                    $value,
+                    $defaultType,
+                    $definitionLocator);
         }
 
         return $parsedData;
     }
 
     /**
-     * @param string $type
-     * @param mixed $parsedValue
+     * @param string $key
+     * @return string
+     */
+    private function fixtureNameWithoutType($key)
+    {
+        return preg_match("/^(.*)<(.*)>$/", $key, $matches) ? $matches[1] : $key;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @param $defaultType
+     * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition
      */
-    private function toDefinition($type, $parsedValue)
+    private function toDefinition($key, $value, $defaultType, DefinitionLocator $definitionLocator)
     {
+        $isReference = is_string($value) && $value[0] === "@";
+        $isMethod = method_exists($defaultType, $key);
+        $type = null;
+
+        if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
+            $type = $matches[2];
+        } elseif (is_array($value)) {
+            $type = $defaultType;
+        }
+
+        $parsedValue = $this->parseRecursively($value, $type, $definitionLocator);
+
         switch (true) {
+            case $isReference:
+                return $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
+            case $isMethod:
+                return $this->definitionFactory->methodCall(
+                        $this->parseRecursively(is_array($value) ? $value : [$value], "array", $definitionLocator));
             case is_null($parsedValue):
                 return $this->definitionFactory->null();
             case is_scalar($parsedValue):
