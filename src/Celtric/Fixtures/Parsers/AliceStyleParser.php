@@ -29,22 +29,7 @@ final class AliceStyleParser implements RawDataParser
 
         foreach ($rawData as $type => $typeRawDefinitions) {
             foreach ($typeRawDefinitions as $name => $values) {
-                $parsedValue = $this->parseValues($type, $values, $definitionLocator);
-
-                switch (true) {
-                    case is_null($parsedValue):
-                        $definitions[$name] = $this->definitionFactory->null();
-                        break;
-                    case is_scalar($parsedValue):
-                        $definitions[$name] = $this->definitionFactory->scalar($parsedValue);
-                        break;
-                    case $type === "array":
-                        $definitions[$name] = $this->definitionFactory->arr($parsedValue);
-                        break;
-                    default:
-                        $definitions[$name] = $this->definitionFactory->object($type, $parsedValue);
-                        break;
-                }
+                $definitions[$name] = $this->toDefinition($type, $this->parseValues($type, $values, $definitionLocator));
             }
         }
 
@@ -79,37 +64,28 @@ final class AliceStyleParser implements RawDataParser
                 continue;
             }
 
-            switch (true) {
-                case is_null($value):
-                    $parsedValues[$key] = $this->definitionFactory->null();
-                    break;
-                case is_scalar($value):
-                    $parsedValues[$key] = $this->definitionFactory->scalar($value);
-                    break;
-                case $this->resolveType($value) === "array":
-                    $parsedValues[$key] = $this->definitionFactory->arr($value);
-                    break;
-                default:
-                    $parsedValues[$key] = $this->definitionFactory->object($type, $value);
-                    break;
-            }
+            $parsedValues[$key] = $this->toDefinition($type, $value);
         }
 
         return $parsedValues;
     }
 
     /**
-     * @param mixed $value
-     * @return string
+     * @param string $type
+     * @param mixed $parsedValue
+     * @return FixtureDefinition
      */
-    private function resolveType($value)
+    private function toDefinition($type, $parsedValue)
     {
-        $nativeType = strtolower(gettype($value));
-
-        if ($nativeType === "double") {
-            return "float";
+        switch (true) {
+            case is_null($parsedValue):
+                return $this->definitionFactory->null();
+            case is_scalar($parsedValue):
+                return $this->definitionFactory->scalar($parsedValue);
+            case $type === "array":
+                return $this->definitionFactory->arr($parsedValue);
+            default:
+                return $this->definitionFactory->object($type, $parsedValue);
         }
-
-        return $nativeType;
     }
 }
