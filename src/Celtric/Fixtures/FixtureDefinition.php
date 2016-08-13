@@ -67,4 +67,10 @@ abstract class FixtureDefinition
     {
         return $this->type === "method_call";
     }
+
+    /**
+     * @param DefinitionLocator $definitionLocator
+     * @return mixed
+     */
+    abstract public function instantiate(DefinitionLocator $definitionLocator);
 }

@@ -2,6 +2,7 @@
 
 namespace Celtric\Fixtures\FixtureTypes;
 
+use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class NativeFixture extends FixtureDefinition
@@ -18,5 +19,13 @@ final class NativeFixture extends FixtureDefinition
         }
 
         parent::__construct($type, $data);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function instantiate(DefinitionLocator $definitionLocator)
+    {
+        return $this->data();
     }
 }

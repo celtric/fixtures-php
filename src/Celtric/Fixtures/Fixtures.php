@@ -25,7 +25,7 @@ final class Fixtures
 
         $definition = $this->definitionLocator->locate($fixtureIdentifier);
 
-        return (new FixtureInstantiator($this->definitionLocator))->instantiate($definition);
+        return $definition->instantiate($this->definitionLocator);
     }
 
     /**
