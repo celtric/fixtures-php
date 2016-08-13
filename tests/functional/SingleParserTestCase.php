@@ -19,7 +19,7 @@ abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
                 new YAMLRawDataLocator(__DIR__ . "/../fixtures/"),
                 $this->parser());
 
-        return (new Fixtures($definitionLocator))->loadFixture($fixtureIdentifier);
+        return (new Fixtures($definitionLocator))->fixture($fixtureIdentifier);
     }
 
     /**
