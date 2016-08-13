@@ -4,7 +4,7 @@ namespace Celtric\Fixtures;
 
 use Celtric\Fixtures\FixtureTypes\ArrayFixture;
 use Celtric\Fixtures\FixtureTypes\MethodCallFixture;
-use Celtric\Fixtures\FixtureTypes\NativeFixture;
+use Celtric\Fixtures\FixtureTypes\NativeValueFixture;
 use Celtric\Fixtures\FixtureTypes\ObjectFixture;
 use Celtric\Fixtures\FixtureTypes\ReferenceFixture;
 
@@ -41,7 +41,7 @@ class FixtureDefinitionFactory
      */
     public function native($value)
     {
-        return new NativeFixture($value);
+        return new NativeValueFixture($value);
     }
 
     /**
@@ -69,7 +69,7 @@ class FixtureDefinitionFactory
      */
     public function reference($reference)
     {
-        return new ReferenceFixture("reference", $reference);
+        return new ReferenceFixture($reference);
     }
 
     /**
@@ -78,6 +78,6 @@ class FixtureDefinitionFactory
      */
     public function methodCall(array $args)
     {
-        return new MethodCallFixture("method_call", $args);
+        return new MethodCallFixture($args);
     }
 }

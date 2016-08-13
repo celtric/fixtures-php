@@ -5,14 +5,17 @@ namespace Celtric\Fixtures\FixtureTypes;
 use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
-final class ArrayFixture extends FixtureDefinition
+final class ArrayFixture implements FixtureDefinition
 {
+    /** @var FixtureDefinition[] */
+    private $data;
+
     /**
-     * @param array $data
+     * @param FixtureDefinition[] $data
      */
     public function __construct(array $data)
     {
-        parent::__construct("array", $data);
+        $this->data = $data;
     }
 
     /**
@@ -22,7 +25,7 @@ final class ArrayFixture extends FixtureDefinition
     {
         $instantiatedData = [];
 
-        foreach ($this->data() as $key => $value) {
+        foreach ($this->data as $key => $value) {
             $instantiatedData[$key] = $value->instantiate($definitionLocator);
         }
 

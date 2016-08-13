@@ -5,20 +5,34 @@ namespace Celtric\Fixtures\FixtureTypes;
 use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
-final class ObjectFixture extends FixtureDefinition
+final class ObjectFixture implements FixtureDefinition
 {
+    /** @var string */
+    private $className;
+
+    /** @var FixtureDefinition[] */
+    private $properties;
+
+    /**
+     * @param string $className
+     * @param FixtureDefinition[] $properties
+     */
+    public function __construct($className, array $properties)
+    {
+        $this->className = $className;
+        $this->properties = $properties;
+    }
+
     /**
      * @inheritDoc
      */
     public function instantiate(DefinitionLocator $definitionLocator)
     {
-        $instance = (new \ReflectionClass($this->type()))->newInstanceWithoutConstructor();
+        $instance = (new \ReflectionClass($this->className))->newInstanceWithoutConstructor();
 
-        foreach ($this->data() as $key => $value) {
-            if ($value instanceof FixtureDefinition && $value->type() === "method_call") {
-                $arguments = array_map(function (FixtureDefinition $definition) use ($definitionLocator) {
-                    return $definition->instantiate($definitionLocator);
-                }, $value->data());
+        foreach ($this->properties as $key => $value) {
+            if ($value instanceof MethodCallFixture) {
+                $arguments = $value->instantiate($definitionLocator);
                 call_user_func_array([$instance, $key], $arguments);
                 continue;
             }
