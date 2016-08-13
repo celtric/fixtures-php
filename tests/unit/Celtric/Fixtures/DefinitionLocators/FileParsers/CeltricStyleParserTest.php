@@ -2,16 +2,27 @@
 
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
-use Celtric\Fixtures\FixtureDefinition as Definition;
 
 final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var FixtureDefinitionFactory */
+    private $definitionFactory;
+
+    /**
+     * @inheritDoc
+     */
+    protected function setUp()
+    {
+        $this->definitionFactory = new FixtureDefinitionFactory();
+    }
+
     /** @test */
     public function null_value()
     {
         $this->assertEquals([
-            "null_value" => Definition::native(null)
+            "null_value" => $this->definitionFactory->native(null)
         ], $this->parse([
             "null_value" => null
         ]));
@@ -21,7 +32,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function empty_array()
     {
         $this->assertEquals([
-            "empty_array" => Definition::arr([])
+            "empty_array" => $this->definitionFactory->arr([])
         ], $this->parse([
             "empty_array<array>" => null
         ]));
@@ -31,11 +42,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function scalar_values()
     {
         $this->assertEquals([
-            "scalar_values" => Definition::arr([
-                "int" => Definition::native(123),
-                "float" => Definition::native(123.456),
-                "string" => Definition::native("Foo"),
-                "bool" => Definition::native(true)
+            "scalar_values" => $this->definitionFactory->arr([
+                "int" => $this->definitionFactory->native(123),
+                "float" => $this->definitionFactory->native(123.456),
+                "string" => $this->definitionFactory->native("Foo"),
+                "bool" => $this->definitionFactory->native(true)
             ])
         ], $this->parse([
             "scalar_values" => [
@@ -51,11 +62,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_array()
     {
         $this->assertEquals([
-            "multidimensional_array" => Definition::arr([
-                "foo" => Definition::native("bar"),
-                "one" => Definition::arr([
-                    "two" => Definition::arr([
-                        "three" => Definition::native("foobar")
+            "multidimensional_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->native("bar"),
+                "one" => $this->definitionFactory->arr([
+                    "two" => $this->definitionFactory->arr([
+                        "three" => $this->definitionFactory->native("foobar")
                     ])
                 ])
             ])
@@ -75,8 +86,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function typed_array()
     {
         $this->assertEquals([
-            "typed_array" => Definition::arr([
-                "foo" => Definition::native("bar")
+            "typed_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->native("bar")
             ])
         ], $this->parse([
             "typed_array<array>" => [
@@ -89,11 +100,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_typed_array()
     {
         $this->assertEquals([
-            "multidimensional_typed_array" => Definition::arr([
-                "foo" => Definition::native("bar"),
-                "one" => Definition::arr([
-                    "two" => Definition::arr([
-                        "three" => Definition::native("foobar")
+            "multidimensional_typed_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->native("bar"),
+                "one" => $this->definitionFactory->arr([
+                    "two" => $this->definitionFactory->arr([
+                        "three" => $this->definitionFactory->native("foobar")
                     ])
                 ])
             ])
@@ -113,8 +124,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_object()
     {
         $this->assertEquals([
-            "euro" => Definition::object("Tests\\Utils\\Currency", [
-                "isoCode" => Definition::native("EUR")
+            "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                "isoCode" => $this->definitionFactory->native("EUR")
             ])
         ], $this->parse([
             "euro<Tests\\Utils\\Currency>" => [
@@ -127,10 +138,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_object()
     {
         $this->assertEquals([
-            "one_euro" => Definition::object("Tests\\Utils\\Money", [
-                "amount" => Definition::native(100),
-                "currency" => Definition::object("Tests\\Utils\\Currency", [
-                    "isoCode" => Definition::native("EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->native(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->native("EUR")
                 ])
             ])
         ], $this->parse([
@@ -147,10 +158,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function root_type()
     {
         $this->assertEquals([
-            "one_euro" => Definition::object("Tests\\Utils\\Money", [
-                "amount" => Definition::native(100),
-                "currency" => Definition::object("Tests\\Utils\\Currency", [
-                    "isoCode" => Definition::native("EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->native(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->native("EUR")
                 ])
             ])
         ], $this->parse([
@@ -168,8 +179,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_reference()
     {
         $this->assertEquals([
-            "same_file_array" => Definition::arr([
-                "foo" => Definition::reference("references.bar")
+            "same_file_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->reference("references.bar")
             ])
         ], $this->parse([
             "same_file_array" => [
@@ -182,15 +193,15 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_references()
     {
         $this->assertEquals([
-            "ref" => Definition::arr([
-                "ref2" => Definition::reference("references.ref2"),
-                "name" => Definition::reference("references.name"),
-                "ref" => Definition::arr([
-                    "ref2" => Definition::reference("references.ref2"),
-                    "name" => Definition::reference("references.name"),
-                    "ref" => Definition::arr([
-                        "ref2" => Definition::reference("references.ref2"),
-                        "name" => Definition::reference("references.name")
+            "ref" => $this->definitionFactory->arr([
+                "ref2" => $this->definitionFactory->reference("references.ref2"),
+                "name" => $this->definitionFactory->reference("references.name"),
+                "ref" => $this->definitionFactory->arr([
+                    "ref2" => $this->definitionFactory->reference("references.ref2"),
+                    "name" => $this->definitionFactory->reference("references.name"),
+                    "ref" => $this->definitionFactory->arr([
+                        "ref2" => $this->definitionFactory->reference("references.ref2"),
+                        "name" => $this->definitionFactory->reference("references.name")
                     ])
                 ])
             ])
@@ -214,14 +225,14 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call()
     {
         $this->assertEquals([
-            "a_person" => Definition::object("Tests\\Utils\\Person", [
-                "setFriend" => Definition::methodCall([
-                    Definition::native("a_friend")
+            "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCall([
+                    $this->definitionFactory->native("a_friend")
                 ])
             ]),
-            "another_person" => Definition::object("Tests\\Utils\\Person", [
-                "setFriend" => Definition::methodCall([
-                    Definition::native("a_friend")
+            "another_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCall([
+                    $this->definitionFactory->native("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -238,9 +249,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call_with_reference()
     {
         $this->assertEquals([
-            "a_person" => Definition::object("Tests\\Utils\\Person", [
-                "setFriend" => Definition::methodCall([
-                    Definition::reference("a_friend")
+            "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCall([
+                    $this->definitionFactory->reference("a_friend")
                 ])
             ])
         ], $this->parse([

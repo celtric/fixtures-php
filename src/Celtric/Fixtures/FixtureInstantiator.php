@@ -23,7 +23,7 @@ final class FixtureInstantiator
     {
         switch (true) {
             case $fixtureDefinition->isNativeValue():
-                return $fixtureDefinition->instantiate();
+                return $fixtureDefinition->data();
             case $fixtureDefinition->isArray():
                 return $this->instantiateArray($fixtureDefinition);
             case $fixtureDefinition->isReference():

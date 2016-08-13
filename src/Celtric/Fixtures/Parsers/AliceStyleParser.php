@@ -3,10 +3,19 @@
 namespace Celtric\Fixtures\Parsers;
 
 use Celtric\Fixtures\FixtureDefinition;
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
 
 final class AliceStyleParser implements RawDataParser
 {
+    /** @var FixtureDefinitionFactory */
+    private $definitionFactory;
+
+    public function __construct()
+    {
+        $this->definitionFactory = new FixtureDefinitionFactory();
+    }
+
     /**
      * @inheritDoc
      */
@@ -24,7 +33,7 @@ final class AliceStyleParser implements RawDataParser
                     $to = $matches[4];
 
                     foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = FixtureDefinition::generic($type, $this->parseValues($type, $values));
+                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues($type, $values));
                     }
 
                     continue;
@@ -41,13 +50,13 @@ final class AliceStyleParser implements RawDataParser
                             return str_replace("<current()>", $i, $value);
                         }, $values);
 
-                        $definitions[$baseName . $i] = FixtureDefinition::generic($type, $this->parseValues($type, $itemValues));
+                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues($type, $itemValues));
                     }
 
                     continue;
                 }
 
-                $definitions[$name] = FixtureDefinition::generic($type, $this->parseValues($type, $values));
+                $definitions[$name] = $this->definitionFactory->generic($type, $this->parseValues($type, $values));
             }
         }
 
@@ -67,18 +76,18 @@ final class AliceStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedValues[$key] = FixtureDefinition::reference(substr($value, 1));
+                $parsedValues[$key] = $this->definitionFactory->reference(substr($value, 1));
                 continue;
             }
 
             $isMethod = method_exists($type, $key);
 
             if ($isMethod) {
-                $parsedValues[$key] = FixtureDefinition::methodCall($this->parseValues($type, $value));
+                $parsedValues[$key] = $this->definitionFactory->methodCall($this->parseValues($type, $value));
                 continue;
             }
 
-            $parsedValues[$key] = FixtureDefinition::generic($this->resolveType($value), $value);
+            $parsedValues[$key] = $this->definitionFactory->generic($this->resolveType($value), $value);
         }
 
         return $parsedValues;

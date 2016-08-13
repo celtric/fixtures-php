@@ -2,12 +2,22 @@
 
 namespace Celtric\Fixtures\Parsers;
 
+use Celtric\Fixtures\DefinitionLocator;
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class CeltricStyleParser implements RawDataParser
 {
     const DEFAULT_TYPE = "array";
+
+    /** @var FixtureDefinitionFactory */
+    private $definitionFactory;
+
+    public function __construct()
+    {
+        $this->definitionFactory = new FixtureDefinitionFactory();
+    }
 
     /**
      * @inheritDoc
@@ -48,14 +58,14 @@ final class CeltricStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedData[$key] = FixtureDefinition::reference(substr($value, 1));
+                $parsedData[$key] = $this->definitionFactory->reference(substr($value, 1));
                 continue;
             }
 
             $isMethod = method_exists($defaultType, $key);
 
             if ($isMethod) {
-                $parsedData[$key] = FixtureDefinition::methodCall(
+                $parsedData[$key] = $this->definitionFactory->methodCall(
                         $this->parseData(is_array($value) ? $value : [$value], "array"));
                 continue;
             }
@@ -68,7 +78,7 @@ final class CeltricStyleParser implements RawDataParser
                 $type = $this->resolveType($value);
             }
 
-            $parsedData[$key] = FixtureDefinition::generic($type, $this->parseData($value, $type));
+            $parsedData[$key] = $this->definitionFactory->generic($type, $this->parseData($value, $type));
         }
 
         return $parsedData;

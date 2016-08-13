@@ -7,24 +7,16 @@ use Celtric\Fixtures\FixtureDefinition;
 final class NativeFixture extends FixtureDefinition
 {
     /**
-     * @param mixed $value
+     * @param mixed $data
      */
-    public function __construct($value)
+    public function __construct($data)
     {
-        $type = strtolower(gettype($value));
+        $type = strtolower(gettype($data));
 
         if ($type === "double") {
             $type = "float";
         }
 
-        parent::__construct($type, $value);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function instantiate()
-    {
-        return $this->data();
+        parent::__construct($type, $data);
     }
 }
