@@ -5,7 +5,7 @@ namespace Celtric\Fixtures\FixtureTypes;
 use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
-final class NativeValueFixture implements FixtureDefinition
+final class ScalarFixture implements FixtureDefinition
 {
     /** @var mixed */
     private $value;

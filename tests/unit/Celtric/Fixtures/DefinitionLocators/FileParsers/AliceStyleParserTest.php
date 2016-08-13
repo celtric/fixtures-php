@@ -23,7 +23,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                "isoCode" => $this->definitionFactory->native("EUR")
+                "isoCode" => $this->definitionFactory->scalar("EUR")
             ])
         ], $this->parse([
             "Tests\\Utils\\Currency" => [
@@ -39,7 +39,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
-                "amount" => $this->definitionFactory->native(100),
+                "amount" => $this->definitionFactory->scalar(100),
                 "currency" => $this->definitionFactory->reference("currency.euro")
             ])
         ], $this->parse([
@@ -57,18 +57,18 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
-                "amount" => $this->definitionFactory->native(100),
+                "amount" => $this->definitionFactory->scalar(100),
                 "currency" => $this->definitionFactory->reference("currency.euro")
             ]),
             "two_dollars" => $this->definitionFactory->object("Tests\\Utils\\Money", [
-                "amount" => $this->definitionFactory->native(200),
+                "amount" => $this->definitionFactory->scalar(200),
                 "currency" => $this->definitionFactory->reference("currency.dollar")
             ]),
             "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                "isoCode" => $this->definitionFactory->native("EUR")
+                "isoCode" => $this->definitionFactory->scalar("EUR")
             ]),
             "dollar" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                "isoCode" => $this->definitionFactory->native("USD")
+                "isoCode" => $this->definitionFactory->scalar("USD")
             ])
         ], $this->parse([
             "Tests\\Utils\\Money" => [
@@ -96,10 +96,10 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function range()
     {
         $this->assertEquals([
-            "definition_0" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->native("bar")]),
-            "definition_1" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->native("bar")]),
-            "definition_2" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->native("bar")]),
-            "definition_3" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->native("bar")])
+            "definition_0" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
+            "definition_1" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
+            "definition_2" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")]),
+            "definition_3" => $this->definitionFactory->object("stdClass", ["foo" => $this->definitionFactory->scalar("bar")])
         ], $this->parse([
             "stdClass" => [
                 "definition_{0..3}" => [
@@ -114,12 +114,12 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "definition_option_a" => $this->definitionFactory->object("stdClass", [
-                "complete" => $this->definitionFactory->native("option_a"),
-                "partial" => $this->definitionFactory->native("option_a@foo")
+                "complete" => $this->definitionFactory->scalar("option_a"),
+                "partial" => $this->definitionFactory->scalar("option_a@foo")
             ]),
             "definition_option_b" => $this->definitionFactory->object("stdClass", [
-                "complete" => $this->definitionFactory->native("option_b"),
-                "partial" => $this->definitionFactory->native("option_b@foo")
+                "complete" => $this->definitionFactory->scalar("option_b"),
+                "partial" => $this->definitionFactory->scalar("option_b@foo")
             ])
         ], $this->parse([
             "stdClass" => [
@@ -137,7 +137,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
                 "setFriend" => $this->definitionFactory->methodCall([
-                    $this->definitionFactory->native("a_friend")
+                    $this->definitionFactory->scalar("a_friend")
                 ])
             ])
         ], $this->parse([

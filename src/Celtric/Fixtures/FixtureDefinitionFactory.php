@@ -4,7 +4,8 @@ namespace Celtric\Fixtures;
 
 use Celtric\Fixtures\FixtureTypes\ArrayFixture;
 use Celtric\Fixtures\FixtureTypes\MethodCallFixture;
-use Celtric\Fixtures\FixtureTypes\NativeValueFixture;
+use Celtric\Fixtures\FixtureTypes\NullFixture;
+use Celtric\Fixtures\FixtureTypes\ScalarFixture;
 use Celtric\Fixtures\FixtureTypes\ObjectFixture;
 use Celtric\Fixtures\FixtureTypes\ReferenceFixture;
 
@@ -18,18 +19,16 @@ class FixtureDefinitionFactory
      */
     public function generic($type, $data)
     {
-        switch ($type) {
-            case "integer":
-            case "float":
-            case "boolean":
-            case "string":
-            case "null":
-                return $this->native($data);
-            case "array":
+        switch (true) {
+            case $type === "null":
+                return $this->null();
+            case is_scalar($data):
+                return $this->scalar($data);
+            case $type === "array":
                 return $this->arr($data);
-            case "reference":
+            case $type === "reference":
                 return $this->reference($data);
-            case "method_call":
+            case $type === "method_call":
                 return $this->methodCall($data);
             default:
                 return $this->object($type, $data);
@@ -37,12 +36,20 @@ class FixtureDefinitionFactory
     }
 
     /**
+     * @return FixtureDefinition
+     */
+    public function null()
+    {
+        return new NullFixture();
+    }
+
+    /**
      * @param mixed $value
      * @return FixtureDefinition
      */
-    public function native($value)
+    public function scalar($value)
     {
-        return new NativeValueFixture($value);
+        return new ScalarFixture($value);
     }
 
     /**

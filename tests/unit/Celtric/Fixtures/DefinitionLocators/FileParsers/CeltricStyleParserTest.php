@@ -22,7 +22,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function null_value()
     {
         $this->assertEquals([
-            "null_value" => $this->definitionFactory->native(null)
+            "null_value" => $this->definitionFactory->null()
         ], $this->parse([
             "null_value" => null
         ]));
@@ -43,10 +43,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "scalar_values" => $this->definitionFactory->arr([
-                "int" => $this->definitionFactory->native(123),
-                "float" => $this->definitionFactory->native(123.456),
-                "string" => $this->definitionFactory->native("Foo"),
-                "bool" => $this->definitionFactory->native(true)
+                "int" => $this->definitionFactory->scalar(123),
+                "float" => $this->definitionFactory->scalar(123.456),
+                "string" => $this->definitionFactory->scalar("Foo"),
+                "bool" => $this->definitionFactory->scalar(true)
             ])
         ], $this->parse([
             "scalar_values" => [
@@ -63,10 +63,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "multidimensional_array" => $this->definitionFactory->arr([
-                "foo" => $this->definitionFactory->native("bar"),
+                "foo" => $this->definitionFactory->scalar("bar"),
                 "one" => $this->definitionFactory->arr([
                     "two" => $this->definitionFactory->arr([
-                        "three" => $this->definitionFactory->native("foobar")
+                        "three" => $this->definitionFactory->scalar("foobar")
                     ])
                 ])
             ])
@@ -87,7 +87,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "typed_array" => $this->definitionFactory->arr([
-                "foo" => $this->definitionFactory->native("bar")
+                "foo" => $this->definitionFactory->scalar("bar")
             ])
         ], $this->parse([
             "typed_array<array>" => [
@@ -101,10 +101,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "multidimensional_typed_array" => $this->definitionFactory->arr([
-                "foo" => $this->definitionFactory->native("bar"),
+                "foo" => $this->definitionFactory->scalar("bar"),
                 "one" => $this->definitionFactory->arr([
                     "two" => $this->definitionFactory->arr([
-                        "three" => $this->definitionFactory->native("foobar")
+                        "three" => $this->definitionFactory->scalar("foobar")
                     ])
                 ])
             ])
@@ -125,7 +125,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                "isoCode" => $this->definitionFactory->native("EUR")
+                "isoCode" => $this->definitionFactory->scalar("EUR")
             ])
         ], $this->parse([
             "euro<Tests\\Utils\\Currency>" => [
@@ -139,9 +139,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
-                "amount" => $this->definitionFactory->native(100),
+                "amount" => $this->definitionFactory->scalar(100),
                 "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                    "isoCode" => $this->definitionFactory->native("EUR")
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([
@@ -159,9 +159,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
-                "amount" => $this->definitionFactory->native(100),
+                "amount" => $this->definitionFactory->scalar(100),
                 "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
-                    "isoCode" => $this->definitionFactory->native("EUR")
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([
@@ -227,12 +227,12 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
                 "setFriend" => $this->definitionFactory->methodCall([
-                    $this->definitionFactory->native("a_friend")
+                    $this->definitionFactory->scalar("a_friend")
                 ])
             ]),
             "another_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
                 "setFriend" => $this->definitionFactory->methodCall([
-                    $this->definitionFactory->native("a_friend")
+                    $this->definitionFactory->scalar("a_friend")
                 ])
             ])
         ], $this->parse([
