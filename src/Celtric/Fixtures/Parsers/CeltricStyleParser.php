@@ -48,15 +48,14 @@ final class CeltricStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedData[$key] = new FixtureDefinition("reference", substr($value, 1));
+                $parsedData[$key] = FixtureDefinition::reference(substr($value, 1));
                 continue;
             }
 
             $isMethod = method_exists($defaultType, $key);
 
             if ($isMethod) {
-                $parsedData[$key] = new FixtureDefinition(
-                        "method_call",
+                $parsedData[$key] = FixtureDefinition::methodCall(
                         $this->parseData(is_array($value) ? $value : [$value], "array"));
                 continue;
             }
@@ -69,7 +68,7 @@ final class CeltricStyleParser implements RawDataParser
                 $type = $this->resolveType($value);
             }
 
-            $parsedData[$key] = new FixtureDefinition($type, $this->parseData($value, $type));
+            $parsedData[$key] = FixtureDefinition::generic($type, $this->parseData($value, $type));
         }
 
         return $parsedData;

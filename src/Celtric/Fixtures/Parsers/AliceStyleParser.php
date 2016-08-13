@@ -24,7 +24,7 @@ final class AliceStyleParser implements RawDataParser
                     $to = $matches[4];
 
                     foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $values));
+                        $definitions[$baseName . $i] = FixtureDefinition::generic($type, $this->parseValues($type, $values));
                     }
 
                     continue;
@@ -41,13 +41,13 @@ final class AliceStyleParser implements RawDataParser
                             return str_replace("<current()>", $i, $value);
                         }, $values);
 
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $itemValues));
+                        $definitions[$baseName . $i] = FixtureDefinition::generic($type, $this->parseValues($type, $itemValues));
                     }
 
                     continue;
                 }
 
-                $definitions[$name] = new FixtureDefinition($type, $this->parseValues($type, $values));
+                $definitions[$name] = FixtureDefinition::generic($type, $this->parseValues($type, $values));
             }
         }
 
@@ -67,18 +67,18 @@ final class AliceStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedValues[$key] = new FixtureDefinition("reference", substr($value, 1));
+                $parsedValues[$key] = FixtureDefinition::reference(substr($value, 1));
                 continue;
             }
 
             $isMethod = method_exists($type, $key);
 
             if ($isMethod) {
-                $parsedValues[$key] = new FixtureDefinition("method_call", $this->parseValues($type, $value));
+                $parsedValues[$key] = FixtureDefinition::methodCall($this->parseValues($type, $value));
                 continue;
             }
 
-            $parsedValues[$key] = new FixtureDefinition($this->resolveType($value), $value);
+            $parsedValues[$key] = FixtureDefinition::generic($this->resolveType($value), $value);
         }
 
         return $parsedValues;

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
 use Celtric\Fixtures\Parsers\AliceStyleParser;
-use Celtric\Fixtures\FixtureDefinition;
+use Celtric\Fixtures\FixtureDefinition as Definition;
 
 final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,8 +11,8 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_object()
     {
         $this->assertEquals([
-            "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                "isoCode" => new FixtureDefinition("string", "EUR")
+            "euro" => Definition::object("Tests\\Utils\\Currency", [
+                "isoCode" => Definition::native("EUR")
             ])
         ], $this->parse([
             "Tests\\Utils\\Currency" => [
@@ -27,9 +27,9 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function reference()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("reference", "currency.euro")
+            "one_euro" => Definition::object("Tests\\Utils\\Money", [
+                "amount" => Definition::native(100),
+                "currency" => Definition::reference("currency.euro")
             ])
         ], $this->parse([
             "Tests\\Utils\\Money" => [
@@ -45,19 +45,19 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multiple_types()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("reference", "currency.euro")
+            "one_euro" => Definition::object("Tests\\Utils\\Money", [
+                "amount" => Definition::native(100),
+                "currency" => Definition::reference("currency.euro")
             ]),
-            "two_dollars" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 200),
-                "currency" => new FixtureDefinition("reference", "currency.dollar")
+            "two_dollars" => Definition::object("Tests\\Utils\\Money", [
+                "amount" => Definition::native(200),
+                "currency" => Definition::reference("currency.dollar")
             ]),
-            "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                "isoCode" => new FixtureDefinition("string", "EUR")
+            "euro" => Definition::object("Tests\\Utils\\Currency", [
+                "isoCode" => Definition::native("EUR")
             ]),
-            "dollar" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                "isoCode" => new FixtureDefinition("string", "USD")
+            "dollar" => Definition::object("Tests\\Utils\\Currency", [
+                "isoCode" => Definition::native("USD")
             ])
         ], $this->parse([
             "Tests\\Utils\\Money" => [
@@ -85,10 +85,10 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function range()
     {
         $this->assertEquals([
-            "definition_0" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
-            "definition_1" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
-            "definition_2" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")]),
-            "definition_3" => new FixtureDefinition("stdClass", ["foo" => new FixtureDefinition("string", "bar")])
+            "definition_0" => Definition::object("stdClass", ["foo" => Definition::native("bar")]),
+            "definition_1" => Definition::object("stdClass", ["foo" => Definition::native("bar")]),
+            "definition_2" => Definition::object("stdClass", ["foo" => Definition::native("bar")]),
+            "definition_3" => Definition::object("stdClass", ["foo" => Definition::native("bar")])
         ], $this->parse([
             "stdClass" => [
                 "definition_{0..3}" => [
@@ -102,13 +102,13 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function custom_list()
     {
         $this->assertEquals([
-            "definition_option_a" => new FixtureDefinition("stdClass", [
-                "complete" => new FixtureDefinition("string", "option_a"),
-                "partial" => new FixtureDefinition("string", "option_a@foo")
+            "definition_option_a" => Definition::object("stdClass", [
+                "complete" => Definition::native("option_a"),
+                "partial" => Definition::native("option_a@foo")
             ]),
-            "definition_option_b" => new FixtureDefinition("stdClass", [
-                "complete" => new FixtureDefinition("string", "option_b"),
-                "partial" => new FixtureDefinition("string", "option_b@foo")
+            "definition_option_b" => Definition::object("stdClass", [
+                "complete" => Definition::native("option_b"),
+                "partial" => Definition::native("option_b@foo")
             ])
         ], $this->parse([
             "stdClass" => [
@@ -124,9 +124,9 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("string", "a_friend")
+            "a_person" => Definition::object("Tests\\Utils\\Person", [
+                "setFriend" => Definition::methodCall([
+                    Definition::native("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -144,9 +144,9 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call_with_reference()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("reference", "a_friend")
+            "a_person" => Definition::object("Tests\\Utils\\Person", [
+                "setFriend" => Definition::methodCall([
+                    Definition::reference("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -164,7 +164,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $rawData
-     * @return FixtureDefinition[]
+     * @return Definition[]
      */
     private function parse(array $rawData)
     {

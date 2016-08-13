@@ -14,10 +14,70 @@ final class FixtureDefinition
      * @param string $type
      * @param mixed $data
      */
-    public function __construct($type, $data)
+    private function __construct($type, $data)
     {
         $this->type = $type;
         $this->data = $data;
+    }
+
+    /**
+     * @param string $type
+     * @param mixed $data
+     * @return FixtureDefinition
+     */
+    public static function generic($type, $data)
+    {
+        return new self($type, $data);
+    }
+
+    /**
+     * @param mixed $value
+     * @return FixtureDefinition
+     */
+    public static function native($value)
+    {
+        $type = strtolower(gettype($value));
+        if ($type === "double") {
+            $type = "float";
+        }
+        return new self($type, $value);
+    }
+
+    /**
+     * @param array $array
+     * @return FixtureDefinition
+     */
+    public static function arr(array $array)
+    {
+        return new self("array", $array);
+    }
+
+    /**
+     * @param string $className
+     * @param array $properties
+     * @return FixtureDefinition
+     */
+    public static function object($className, array $properties)
+    {
+        return new self($className, $properties);
+    }
+
+    /**
+     * @param string $reference
+     * @return FixtureDefinition
+     */
+    public static function reference($reference)
+    {
+        return new self("reference", $reference);
+    }
+
+    /**
+     * @param array $args
+     * @return FixtureDefinition
+     */
+    public static function methodCall(array $args)
+    {
+        return new self("method_call", $args);
     }
 
     /**

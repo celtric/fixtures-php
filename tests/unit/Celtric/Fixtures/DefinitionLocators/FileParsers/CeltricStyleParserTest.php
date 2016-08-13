@@ -3,7 +3,7 @@
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
-use Celtric\Fixtures\FixtureDefinition;
+use Celtric\Fixtures\FixtureDefinition as Definition;
 
 final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function null_value()
     {
         $this->assertEquals([
-            "null_value" => new FixtureDefinition("null", null)
+            "null_value" => Definition::native(null)
         ], $this->parse([
             "null_value" => null
         ]));
@@ -21,7 +21,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function empty_array()
     {
         $this->assertEquals([
-            "empty_array" => new FixtureDefinition("array", [])
+            "empty_array" => Definition::arr([])
         ], $this->parse([
             "empty_array<array>" => null
         ]));
@@ -31,11 +31,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function scalar_values()
     {
         $this->assertEquals([
-            "scalar_values" => new FixtureDefinition("array", [
-                "int" => new FixtureDefinition("integer", 123),
-                "float" => new FixtureDefinition("float", 123.456),
-                "string" => new FixtureDefinition("string", "Foo"),
-                "bool" => new FixtureDefinition("boolean", true)
+            "scalar_values" => Definition::arr([
+                "int" => Definition::native(123),
+                "float" => Definition::native(123.456),
+                "string" => Definition::native("Foo"),
+                "bool" => Definition::native(true)
             ])
         ], $this->parse([
             "scalar_values" => [
@@ -51,11 +51,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_array()
     {
         $this->assertEquals([
-            "multidimensional_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar"),
-                "one" => new FixtureDefinition("array", [
-                    "two" => new FixtureDefinition("array", [
-                        "three" => new FixtureDefinition("string", "foobar")
+            "multidimensional_array" => Definition::arr([
+                "foo" => Definition::native("bar"),
+                "one" => Definition::arr([
+                    "two" => Definition::arr([
+                        "three" => Definition::native("foobar")
                     ])
                 ])
             ])
@@ -75,8 +75,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function typed_array()
     {
         $this->assertEquals([
-            "typed_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar")
+            "typed_array" => Definition::arr([
+                "foo" => Definition::native("bar")
             ])
         ], $this->parse([
             "typed_array<array>" => [
@@ -89,11 +89,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_typed_array()
     {
         $this->assertEquals([
-            "multidimensional_typed_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar"),
-                "one" => new FixtureDefinition("array", [
-                    "two" => new FixtureDefinition("array", [
-                        "three" => new FixtureDefinition("string", "foobar")
+            "multidimensional_typed_array" => Definition::arr([
+                "foo" => Definition::native("bar"),
+                "one" => Definition::arr([
+                    "two" => Definition::arr([
+                        "three" => Definition::native("foobar")
                     ])
                 ])
             ])
@@ -113,8 +113,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_object()
     {
         $this->assertEquals([
-            "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                "isoCode" => new FixtureDefinition("string", "EUR")
+            "euro" => Definition::object("Tests\\Utils\\Currency", [
+                "isoCode" => Definition::native("EUR")
             ])
         ], $this->parse([
             "euro<Tests\\Utils\\Currency>" => [
@@ -127,10 +127,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_object()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => Definition::object("Tests\\Utils\\Money", [
+                "amount" => Definition::native(100),
+                "currency" => Definition::object("Tests\\Utils\\Currency", [
+                    "isoCode" => Definition::native("EUR")
                 ])
             ])
         ], $this->parse([
@@ -147,10 +147,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function root_type()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => Definition::object("Tests\\Utils\\Money", [
+                "amount" => Definition::native(100),
+                "currency" => Definition::object("Tests\\Utils\\Currency", [
+                    "isoCode" => Definition::native("EUR")
                 ])
             ])
         ], $this->parse([
@@ -168,8 +168,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_reference()
     {
         $this->assertEquals([
-            "same_file_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("reference", "references.bar")
+            "same_file_array" => Definition::arr([
+                "foo" => Definition::reference("references.bar")
             ])
         ], $this->parse([
             "same_file_array" => [
@@ -182,15 +182,15 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_references()
     {
         $this->assertEquals([
-            "ref" => new FixtureDefinition("array", [
-                "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                "name" => new FixtureDefinition("reference", "references.name"),
-                "ref" => new FixtureDefinition("array", [
-                    "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                    "name" => new FixtureDefinition("reference", "references.name"),
-                    "ref" => new FixtureDefinition("array", [
-                        "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                        "name" => new FixtureDefinition("reference", "references.name")
+            "ref" => Definition::arr([
+                "ref2" => Definition::reference("references.ref2"),
+                "name" => Definition::reference("references.name"),
+                "ref" => Definition::arr([
+                    "ref2" => Definition::reference("references.ref2"),
+                    "name" => Definition::reference("references.name"),
+                    "ref" => Definition::arr([
+                        "ref2" => Definition::reference("references.ref2"),
+                        "name" => Definition::reference("references.name")
                     ])
                 ])
             ])
@@ -214,14 +214,14 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("string", "a_friend")
+            "a_person" => Definition::object("Tests\\Utils\\Person", [
+                "setFriend" => Definition::methodCall([
+                    Definition::native("a_friend")
                 ])
             ]),
-            "another_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("string", "a_friend")
+            "another_person" => Definition::object("Tests\\Utils\\Person", [
+                "setFriend" => Definition::methodCall([
+                    Definition::native("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -238,9 +238,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call_with_reference()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("reference", "a_friend")
+            "a_person" => Definition::object("Tests\\Utils\\Person", [
+                "setFriend" => Definition::methodCall([
+                    Definition::reference("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -256,7 +256,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $rawData
-     * @return FixtureDefinition[]
+     * @return Definition[]
      */
     private function parse(array $rawData)
     {
