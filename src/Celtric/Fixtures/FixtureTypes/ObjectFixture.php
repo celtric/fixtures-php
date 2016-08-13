@@ -15,7 +15,7 @@ final class ObjectFixture extends FixtureDefinition
         $instance = (new \ReflectionClass($this->type()))->newInstanceWithoutConstructor();
 
         foreach ($this->data() as $key => $value) {
-            if ($value instanceof FixtureDefinition && $value->isMethodCall()) {
+            if ($value instanceof FixtureDefinition && $value->type() === "method_call") {
                 $arguments = array_map(function (FixtureDefinition $definition) use ($definitionLocator) {
                     return $definition->instantiate($definitionLocator);
                 }, $value->data());

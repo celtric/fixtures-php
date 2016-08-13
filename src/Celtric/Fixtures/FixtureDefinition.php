@@ -37,38 +37,6 @@ abstract class FixtureDefinition
     }
 
     /**
-     * @return bool
-     */
-    public function isReference()
-    {
-        return $this->type === "reference";
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNativeValue()
-    {
-        return !$this->isReference() && (is_scalar($this->data) || is_null($this->data));
-    }
-
-    /**
-     * @return bool
-     */
-    public function isArray()
-    {
-        return $this->type === "array";
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMethodCall()
-    {
-        return $this->type === "method_call";
-    }
-
-    /**
      * @param DefinitionLocator $definitionLocator
      * @return mixed
      */
