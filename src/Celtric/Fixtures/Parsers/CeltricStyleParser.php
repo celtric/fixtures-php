@@ -60,29 +60,29 @@ final class CeltricStyleParser implements RawDataParser
 
         foreach ($rawData as $key => $value) {
             $isReference = is_string($value) && $value[0] === "@";
-
-            if ($isReference) {
-                $parsedData[$key] = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
-                continue;
-            }
-
             $isMethod = method_exists($defaultType, $key);
 
-            if ($isMethod) {
-                $parsedData[$key] = $this->definitionFactory->methodCall(
-                        $this->recursiveParser(is_array($value) ? $value : [$value], "array", $definitionLocator));
-                continue;
+            switch (true) {
+                case $isReference:
+                    $definition = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
+                    break;
+                case $isMethod:
+                    $definition = $this->definitionFactory->methodCall(
+                            $this->recursiveParser(is_array($value) ? $value : [$value], "array", $definitionLocator));
+                    break;
+                default:
+                    $type = null;
+
+                    if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
+                        list(, $key, $type) = $matches;
+                    } elseif (is_array($value)) {
+                        $type = $defaultType;
+                    }
+
+                    $definition = $this->toDefinition($type, $this->recursiveParser($value, $type, $definitionLocator));
             }
 
-            if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
-                list(, $key, $type) = $matches;
-            } elseif (is_array($value)) {
-                $type = $defaultType;
-            } else {
-                $type = "scalar";
-            }
-
-            $parsedData[$key] = $this->toDefinition($type, $this->recursiveParser($value, $type, $definitionLocator));
+            $parsedData[$key] = $definition;
         }
 
         return $parsedData;
