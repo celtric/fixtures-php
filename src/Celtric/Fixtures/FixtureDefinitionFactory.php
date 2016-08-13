@@ -85,6 +85,6 @@ class FixtureDefinitionFactory
      */
     public function reference($reference, DefinitionLocator $definitionLocator)
     {
-        return new ReferenceFixture($reference, $definitionLocator);
+        return new ReferenceFixture(new FixtureIdentifier($reference), $definitionLocator);
     }
 }

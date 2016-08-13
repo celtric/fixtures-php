@@ -8,17 +8,17 @@ use Celtric\Fixtures\FixtureIdentifier;
 
 final class ReferenceFixture implements FixtureDefinition
 {
-    /** @var string */
+    /** @var FixtureIdentifier */
     private $reference;
 
     /** @var DefinitionLocator */
     private $definitionLocator;
 
     /**
-     * @param string $reference
+     * @param FixtureIdentifier $reference
      * @param DefinitionLocator $definitionLocator
      */
-    public function __construct($reference, DefinitionLocator $definitionLocator)
+    public function __construct(FixtureIdentifier $reference, DefinitionLocator $definitionLocator)
     {
         $this->reference = $reference;
         $this->definitionLocator = $definitionLocator;
@@ -29,6 +29,6 @@ final class ReferenceFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        return $this->definitionLocator->locate(new FixtureIdentifier($this->reference))->instantiate();
+        return $this->definitionLocator->locate($this->reference)->instantiate();
     }
 }
