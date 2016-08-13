@@ -39,7 +39,7 @@ final class FixtureInstantiator
      */
     private function instantiateNativeValue(FixtureDefinition $fixtureDefinition)
     {
-        return $fixtureDefinition->data();
+        return $fixtureDefinition->instantiate();
     }
 
     /**

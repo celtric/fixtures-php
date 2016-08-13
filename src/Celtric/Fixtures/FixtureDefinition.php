@@ -2,7 +2,10 @@
 
 namespace Celtric\Fixtures;
 
-final class FixtureDefinition
+use Celtric\Fixtures\FixtureTypes\NativeFixture;
+use SebastianBergmann\GlobalState\RuntimeException;
+
+class FixtureDefinition
 {
     /** @var string */
     private $type;
@@ -14,7 +17,7 @@ final class FixtureDefinition
      * @param string $type
      * @param mixed $data
      */
-    private function __construct($type, $data)
+    protected function __construct($type, $data)
     {
         $this->type = $type;
         $this->data = $data;
@@ -27,6 +30,10 @@ final class FixtureDefinition
      */
     public static function generic($type, $data)
     {
+        if (in_array($type, ["integer", "float", "boolean", "string", "null"])) {
+            return self::native($data);
+        }
+
         return new self($type, $data);
     }
 
@@ -36,11 +43,7 @@ final class FixtureDefinition
      */
     public static function native($value)
     {
-        $type = strtolower(gettype($value));
-        if ($type === "double") {
-            $type = "float";
-        }
-        return new self($type, $value);
+        return new NativeFixture($value);
     }
 
     /**
@@ -126,5 +129,13 @@ final class FixtureDefinition
     public function isMethodCall()
     {
         return $this->type === "method_call";
+    }
+
+    /**
+     * @return mixed
+     */
+    public function instantiate()
+    {
+        throw new RuntimeException("Not implemented");
     }
 }
