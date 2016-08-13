@@ -2,7 +2,6 @@
 
 namespace Celtric\Fixtures\FixtureTypes;
 
-use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class MethodCallFixture implements FixtureDefinition
@@ -21,12 +20,12 @@ final class MethodCallFixture implements FixtureDefinition
     /**
      * @inheritDoc
      */
-    public function instantiate(DefinitionLocator $definitionLocator)
+    public function instantiate()
     {
         $instantiatedData = [];
 
         foreach ($this->arguments as $key => $value) {
-            $instantiatedData[$key] = $value->instantiate($definitionLocator);
+            $instantiatedData[$key] = $value->instantiate();
         }
 
         return $instantiatedData;

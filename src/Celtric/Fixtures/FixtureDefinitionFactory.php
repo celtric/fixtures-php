@@ -26,8 +26,6 @@ class FixtureDefinitionFactory
                 return $this->scalar($data);
             case $type === "array":
                 return $this->arr($data);
-            case $type === "reference":
-                return $this->reference($data);
             case $type === "method_call":
                 return $this->methodCall($data);
             default:
@@ -72,20 +70,21 @@ class FixtureDefinitionFactory
     }
 
     /**
-     * @param string $reference
-     * @return FixtureDefinition
-     */
-    public function reference($reference)
-    {
-        return new ReferenceFixture($reference);
-    }
-
-    /**
      * @param array $args
      * @return FixtureDefinition
      */
     public function methodCall(array $args)
     {
         return new MethodCallFixture($args);
+    }
+
+    /**
+     * @param string $reference
+     * @param DefinitionLocator $definitionLocator
+     * @return FixtureDefinition
+     */
+    public function reference($reference, DefinitionLocator $definitionLocator)
+    {
+        return new ReferenceFixture($reference, $definitionLocator);
     }
 }

@@ -32,7 +32,7 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
     {
         $rawData = $this->rawDataLocator->locate($fixtureIdentifier);
 
-        $definitions = $this->parser->parse($rawData);
+        $definitions = $this->parser->parse($rawData, $this);
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");

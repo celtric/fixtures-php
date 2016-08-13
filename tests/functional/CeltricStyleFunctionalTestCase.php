@@ -2,6 +2,7 @@
 
 namespace Tests\Functional;
 
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
 
 abstract class CeltricStyleFunctionalTestCase extends SingleParserTestCase
@@ -11,6 +12,6 @@ abstract class CeltricStyleFunctionalTestCase extends SingleParserTestCase
      */
     protected function parser()
     {
-        return new CeltricStyleParser();
+        return new CeltricStyleParser(new FixtureDefinitionFactory());
     }
 }

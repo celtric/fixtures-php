@@ -3,6 +3,7 @@
 namespace Tests\Functional;
 
 use Celtric\Fixtures\DefinitionLocators\RegexNamespaceBasedDefinitionLocator;
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Fixtures;
 use Celtric\Fixtures\Parsers\AliceStyleParser;
 use Celtric\Fixtures\RawDataLocators\YAMLRawDataLocator;
@@ -26,9 +27,11 @@ final class CrossParserTest extends \PHPUnit_Framework_TestCase
      */
     private function fixture($fixtureIdentifier)
     {
+        $definitionFactory = new FixtureDefinitionFactory();
+
         $parsers = [
-            "/^alice_style\\.(.*)/" => new AliceStyleParser(),
-            "/(.*)/" => new CeltricStyleParser()
+            "/^alice_style\\.(.*)/" => new AliceStyleParser($definitionFactory),
+            "/(.*)/" => new CeltricStyleParser($definitionFactory)
         ];
 
         $fixtures = new Fixtures(

@@ -34,7 +34,7 @@ final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
 
         foreach ($this->parsers as $namespaceMatcher => $parser) {
             if (preg_match($namespaceMatcher, $fixtureIdentifier->getNamespace())) {
-                $definitions = $parser->parse($rawData);
+                $definitions = $parser->parse($rawData, $this);
                 break;
             }
         }

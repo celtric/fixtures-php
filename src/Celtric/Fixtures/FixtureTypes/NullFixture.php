@@ -2,7 +2,6 @@
 
 namespace Celtric\Fixtures\FixtureTypes;
 
-use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class NullFixture implements FixtureDefinition
@@ -10,7 +9,7 @@ final class NullFixture implements FixtureDefinition
     /**
      * @inheritDoc
      */
-    public function instantiate(DefinitionLocator $definitionLocator)
+    public function instantiate()
     {
         return null;
     }

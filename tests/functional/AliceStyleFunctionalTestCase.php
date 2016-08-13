@@ -2,6 +2,7 @@
 
 namespace Tests\Functional;
 
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Parsers\AliceStyleParser;
 
 abstract class AliceStyleFunctionalTestCase extends SingleParserTestCase
@@ -11,6 +12,6 @@ abstract class AliceStyleFunctionalTestCase extends SingleParserTestCase
      */
     protected function parser()
     {
-        return new AliceStyleParser();
+        return new AliceStyleParser(new FixtureDefinitionFactory());
     }
 }

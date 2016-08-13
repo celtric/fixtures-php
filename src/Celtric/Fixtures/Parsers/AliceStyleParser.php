@@ -2,6 +2,7 @@
 
 namespace Celtric\Fixtures\Parsers;
 
+use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
@@ -11,15 +12,18 @@ final class AliceStyleParser implements RawDataParser
     /** @var FixtureDefinitionFactory */
     private $definitionFactory;
 
-    public function __construct()
+    /**
+     * @param FixtureDefinitionFactory $definitionFactory
+     */
+    public function __construct(FixtureDefinitionFactory $definitionFactory)
     {
-        $this->definitionFactory = new FixtureDefinitionFactory();
+        $this->definitionFactory = $definitionFactory;
     }
 
     /**
      * @inheritDoc
      */
-    public function parse(array $rawData)
+    public function parse(array $rawData, DefinitionLocator $definitionLocator)
     {
         $definitions = [];
 
@@ -33,7 +37,10 @@ final class AliceStyleParser implements RawDataParser
                     $to = $matches[4];
 
                     foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues($type, $values));
+                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues(
+                                $type,
+                                $values,
+                                $definitionLocator));
                     }
 
                     continue;
@@ -50,13 +57,16 @@ final class AliceStyleParser implements RawDataParser
                             return str_replace("<current()>", $i, $value);
                         }, $values);
 
-                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues($type, $itemValues));
+                        $definitions[$baseName . $i] = $this->definitionFactory->generic($type, $this->parseValues(
+                                $type,
+                                $itemValues,
+                                $definitionLocator));
                     }
 
                     continue;
                 }
 
-                $definitions[$name] = $this->definitionFactory->generic($type, $this->parseValues($type, $values));
+                $definitions[$name] = $this->definitionFactory->generic($type, $this->parseValues($type, $values, $definitionLocator));
             }
         }
 
@@ -66,9 +76,10 @@ final class AliceStyleParser implements RawDataParser
     /**
      * @param string $type
      * @param array $rawValues
+     * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition[]
      */
-    private function parseValues($type, array $rawValues)
+    private function parseValues($type, array $rawValues, DefinitionLocator $definitionLocator)
     {
         $parsedValues = [];
 
@@ -76,14 +87,17 @@ final class AliceStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedValues[$key] = $this->definitionFactory->reference(substr($value, 1));
+                $parsedValues[$key] = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
                 continue;
             }
 
             $isMethod = method_exists($type, $key);
 
             if ($isMethod) {
-                $parsedValues[$key] = $this->definitionFactory->methodCall($this->parseValues($type, $value));
+                $parsedValues[$key] = $this->definitionFactory->methodCall($this->parseValues(
+                        $type,
+                        $value,
+                        $definitionLocator));
                 continue;
             }
 

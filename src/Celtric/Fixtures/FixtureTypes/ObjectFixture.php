@@ -2,7 +2,6 @@
 
 namespace Celtric\Fixtures\FixtureTypes;
 
-use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class ObjectFixture implements FixtureDefinition
@@ -26,20 +25,20 @@ final class ObjectFixture implements FixtureDefinition
     /**
      * @inheritDoc
      */
-    public function instantiate(DefinitionLocator $definitionLocator)
+    public function instantiate()
     {
         $instance = (new \ReflectionClass($this->className))->newInstanceWithoutConstructor();
 
         foreach ($this->properties as $key => $value) {
             if ($value instanceof MethodCallFixture) {
-                $arguments = $value->instantiate($definitionLocator);
+                $arguments = $value->instantiate();
                 call_user_func_array([$instance, $key], $arguments);
                 continue;
             }
 
             $reflectedProperty = new \ReflectionProperty($instance, $key);
             $reflectedProperty->setAccessible(true);
-            $reflectedProperty->setValue($instance, $value->instantiate($definitionLocator));
+            $reflectedProperty->setValue($instance, $value->instantiate());
         }
 
         return $instance;

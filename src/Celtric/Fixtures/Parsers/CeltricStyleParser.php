@@ -14,15 +14,18 @@ final class CeltricStyleParser implements RawDataParser
     /** @var FixtureDefinitionFactory */
     private $definitionFactory;
 
-    public function __construct()
+    /**
+     * @param FixtureDefinitionFactory $definitionFactory
+     */
+    public function __construct(FixtureDefinitionFactory $definitionFactory)
     {
-        $this->definitionFactory = new FixtureDefinitionFactory();
+        $this->definitionFactory = $definitionFactory;
     }
 
     /**
      * @inheritDoc
      */
-    public function parse(array $rawData)
+    public function parse(array $rawData, DefinitionLocator $definitionLocator)
     {
         if (!empty($rawData["root_type"])) {
             if (!is_string($rawData["root_type"])) {
@@ -34,15 +37,16 @@ final class CeltricStyleParser implements RawDataParser
             $rootType = self::DEFAULT_TYPE;
         }
 
-        return $this->parseData($rawData, $rootType);
+        return $this->parseData($rawData, $rootType, $definitionLocator);
     }
 
     /**
      * @param mixed $rawData
      * @param string $defaultType
+     * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition[]
      */
-    private function parseData($rawData, $defaultType)
+    private function parseData($rawData, $defaultType, DefinitionLocator $definitionLocator)
     {
         if (!is_array($rawData)) {
             if ($defaultType === "array") {
@@ -58,7 +62,7 @@ final class CeltricStyleParser implements RawDataParser
             $isReference = is_string($value) && $value[0] === "@";
 
             if ($isReference) {
-                $parsedData[$key] = $this->definitionFactory->reference(substr($value, 1));
+                $parsedData[$key] = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
                 continue;
             }
 
@@ -66,7 +70,7 @@ final class CeltricStyleParser implements RawDataParser
 
             if ($isMethod) {
                 $parsedData[$key] = $this->definitionFactory->methodCall(
-                        $this->parseData(is_array($value) ? $value : [$value], "array"));
+                        $this->parseData(is_array($value) ? $value : [$value], "array", $definitionLocator));
                 continue;
             }
 
@@ -78,7 +82,10 @@ final class CeltricStyleParser implements RawDataParser
                 $type = $this->resolveType($value);
             }
 
-            $parsedData[$key] = $this->definitionFactory->generic($type, $this->parseData($value, $type));
+            $parsedData[$key] = $this->definitionFactory->generic($type, $this->parseData(
+                    $value,
+                    $type,
+                    $definitionLocator));
         }
 
         return $parsedData;

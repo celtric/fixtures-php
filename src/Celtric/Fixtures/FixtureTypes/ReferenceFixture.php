@@ -11,19 +11,24 @@ final class ReferenceFixture implements FixtureDefinition
     /** @var string */
     private $reference;
 
+    /** @var DefinitionLocator */
+    private $definitionLocator;
+
     /**
      * @param string $reference
+     * @param DefinitionLocator $definitionLocator
      */
-    public function __construct($reference)
+    public function __construct($reference, DefinitionLocator $definitionLocator)
     {
         $this->reference = $reference;
+        $this->definitionLocator = $definitionLocator;
     }
 
     /**
      * @inheritDoc
      */
-    public function instantiate(DefinitionLocator $definitionLocator)
+    public function instantiate()
     {
-        return $definitionLocator->locate(new FixtureIdentifier($this->reference))->instantiate($definitionLocator);
+        return $this->definitionLocator->locate(new FixtureIdentifier($this->reference))->instantiate();
     }
 }

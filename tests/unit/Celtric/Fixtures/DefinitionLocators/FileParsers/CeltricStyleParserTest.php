@@ -2,13 +2,18 @@
 
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
+use Celtric\Fixtures\FixtureDefinition;
 use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
+use Tests\Utils\NullDefinitionLocator;
 
 final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 {
     /** @var FixtureDefinitionFactory */
     private $definitionFactory;
+
+    /** @var CeltricStyleParser */
+    private $parser;
 
     /**
      * @inheritDoc
@@ -16,6 +21,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->definitionFactory = new FixtureDefinitionFactory();
+        $this->parser = new CeltricStyleParser($this->definitionFactory);
     }
 
     /** @test */
@@ -180,7 +186,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "same_file_array" => $this->definitionFactory->arr([
-                "foo" => $this->definitionFactory->reference("references.bar")
+                "foo" => $this->definitionFactory->reference("references.bar", new NullDefinitionLocator())
             ])
         ], $this->parse([
             "same_file_array" => [
@@ -194,14 +200,14 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "ref" => $this->definitionFactory->arr([
-                "ref2" => $this->definitionFactory->reference("references.ref2"),
-                "name" => $this->definitionFactory->reference("references.name"),
+                "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator()),
                 "ref" => $this->definitionFactory->arr([
-                    "ref2" => $this->definitionFactory->reference("references.ref2"),
-                    "name" => $this->definitionFactory->reference("references.name"),
+                    "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                    "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator()),
                     "ref" => $this->definitionFactory->arr([
-                        "ref2" => $this->definitionFactory->reference("references.ref2"),
-                        "name" => $this->definitionFactory->reference("references.name")
+                        "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                        "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator())
                     ])
                 ])
             ])
@@ -251,7 +257,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
                 "setFriend" => $this->definitionFactory->methodCall([
-                    $this->definitionFactory->reference("a_friend")
+                    $this->definitionFactory->reference("a_friend", new NullDefinitionLocator())
                 ])
             ])
         ], $this->parse([
@@ -267,10 +273,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $rawData
-     * @return Definition[]
+     * @return FixtureDefinition[]
      */
     private function parse(array $rawData)
     {
-        return (new CeltricStyleParser())->parse($rawData);
+        return $this->parser->parse($rawData, new NullDefinitionLocator());
     }
 }

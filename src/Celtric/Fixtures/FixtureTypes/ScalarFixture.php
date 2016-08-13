@@ -2,7 +2,6 @@
 
 namespace Celtric\Fixtures\FixtureTypes;
 
-use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
 
 final class ScalarFixture implements FixtureDefinition
@@ -21,7 +20,7 @@ final class ScalarFixture implements FixtureDefinition
     /**
      * @inheritDoc
      */
-    public function instantiate(DefinitionLocator $definitionLocator)
+    public function instantiate()
     {
         return $this->value;
     }

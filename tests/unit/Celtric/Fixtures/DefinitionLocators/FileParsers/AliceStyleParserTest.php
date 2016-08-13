@@ -2,13 +2,18 @@
 
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
+use Celtric\Fixtures\FixtureDefinition;
 use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\Parsers\AliceStyleParser;
+use Tests\Utils\NullDefinitionLocator;
 
 final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
 {
     /** @var FixtureDefinitionFactory */
     private $definitionFactory;
+
+    /** @var AliceStyleParser */
+    private $parser;
 
     /**
      * @inheritDoc
@@ -16,6 +21,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->definitionFactory = new FixtureDefinitionFactory();
+        $this->parser = new AliceStyleParser($this->definitionFactory);
     }
 
     /** @test */
@@ -40,7 +46,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
                 "amount" => $this->definitionFactory->scalar(100),
-                "currency" => $this->definitionFactory->reference("currency.euro")
+                "currency" => $this->definitionFactory->reference("currency.euro", new NullDefinitionLocator())
             ])
         ], $this->parse([
             "Tests\\Utils\\Money" => [
@@ -58,11 +64,11 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
                 "amount" => $this->definitionFactory->scalar(100),
-                "currency" => $this->definitionFactory->reference("currency.euro")
+                "currency" => $this->definitionFactory->reference("currency.euro", new NullDefinitionLocator())
             ]),
             "two_dollars" => $this->definitionFactory->object("Tests\\Utils\\Money", [
                 "amount" => $this->definitionFactory->scalar(200),
-                "currency" => $this->definitionFactory->reference("currency.dollar")
+                "currency" => $this->definitionFactory->reference("currency.dollar", new NullDefinitionLocator())
             ]),
             "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
                 "isoCode" => $this->definitionFactory->scalar("EUR")
@@ -157,7 +163,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
                 "setFriend" => $this->definitionFactory->methodCall([
-                    $this->definitionFactory->reference("a_friend")
+                    $this->definitionFactory->reference("a_friend", new NullDefinitionLocator())
                 ])
             ])
         ], $this->parse([
@@ -175,10 +181,10 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param array $rawData
-     * @return Definition[]
+     * @return FixtureDefinition[]
      */
     private function parse(array $rawData)
     {
-        return (new AliceStyleParser())->parse($rawData);
+        return $this->parser->parse($rawData, new NullDefinitionLocator());
     }
 }
