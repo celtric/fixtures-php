@@ -27,9 +27,12 @@ final class AliceStyleParser implements RawDataParser
     {
         $definitions = [];
 
-        foreach ($rawData as $type => $typeRawDefinitions) {
-            foreach ($typeRawDefinitions as $name => $values) {
-                $definitions[$name] = $this->toDefinition($type, $this->parseValues($type, $values, $definitionLocator));
+        foreach ($rawData as $className => $rawDefinitionsOfThisClass) {
+            /** @var array $rawDefinitionsOfThisClass*/
+            foreach ($rawDefinitionsOfThisClass as $fixtureName => $fixtureValues) {
+                $definitions[$fixtureName] = $this->definitionFactory->object(
+                        $className,
+                        $this->parseSingleFixtureValues($className, $fixtureValues, $definitionLocator));
             }
         }
 
@@ -42,50 +45,42 @@ final class AliceStyleParser implements RawDataParser
      * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition[]
      */
-    private function parseValues($type, array $rawValues, DefinitionLocator $definitionLocator)
+    private function parseSingleFixtureValues($type, array $rawValues, DefinitionLocator $definitionLocator)
     {
         $parsedValues = [];
 
         foreach ($rawValues as $key => $value) {
-            $isReference = is_string($value) && $value[0] === "@";
-
-            if ($isReference) {
-                $parsedValues[$key] = $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
-                continue;
-            }
-
-            $isMethod = method_exists($type, $key);
-
-            if ($isMethod) {
-                $parsedValues[$key] = $this->definitionFactory->methodCall($this->parseValues(
-                        $type,
-                        $value,
-                        $definitionLocator));
-                continue;
-            }
-
-            $parsedValues[$key] = $this->toDefinition($type, $value);
+            $parsedValues[$key] = $this->toDefinition($key, $type, $value, $definitionLocator);
         }
 
         return $parsedValues;
     }
 
     /**
+     * @param string $key
      * @param string $type
-     * @param mixed $parsedValue
+     * @param mixed $value
+     * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition
      */
-    private function toDefinition($type, $parsedValue)
+    private function toDefinition($key, $type, $value, DefinitionLocator $definitionLocator)
     {
+        $isReference = is_string($value) && $value[0] === "@";
+        $isMethod = method_exists($type, $key);
+
         switch (true) {
-            case is_null($parsedValue):
+            case $isReference:
+                return $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
+            case $isMethod:
+                return $this->definitionFactory->methodCall($this->parseSingleFixtureValues($type, $value, $definitionLocator));
+            case is_null($value):
                 return $this->definitionFactory->null();
-            case is_scalar($parsedValue):
-                return $this->definitionFactory->scalar($parsedValue);
+            case is_scalar($value):
+                return $this->definitionFactory->scalar($value);
             case $type === "array":
-                return $this->definitionFactory->arr($parsedValue);
+                return $this->definitionFactory->arr($value);
             default:
-                return $this->definitionFactory->object($type, $parsedValue);
+                return $this->definitionFactory->object($type, $value);
         }
     }
 }
