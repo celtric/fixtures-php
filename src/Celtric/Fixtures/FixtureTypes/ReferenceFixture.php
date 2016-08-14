@@ -29,6 +29,6 @@ final class ReferenceFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        return $this->definitionLocator->locate($this->reference)->instantiate();
+        return $this->definitionLocator->fixtureDefinition($this->reference)->instantiate();
     }
 }

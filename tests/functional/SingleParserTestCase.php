@@ -10,16 +10,24 @@ use Celtric\Fixtures\RawDataParser;
 abstract class SingleParserTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @param string $fixtureIdentifier
-     * @return mixed
+     * @return Fixtures
      */
-    protected function fixture($fixtureIdentifier)
+    protected function fixtures()
     {
         $definitionLocator = new SingleParserDefinitionLocator(
                 new YAMLRawDataLocator(__DIR__ . "/../fixtures/"),
                 $this->parser());
 
-        return (new Fixtures($definitionLocator))->fixture($fixtureIdentifier);
+        return new Fixtures($definitionLocator);
+    }
+
+    /**
+     * @param string $fixtureIdentifier
+     * @return mixed
+     */
+    protected function fixture($fixtureIdentifier)
+    {
+        return $this->fixtures()->fixture($fixtureIdentifier);
     }
 
     /**

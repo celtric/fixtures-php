@@ -16,16 +16,24 @@ final class CrossParserTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function celtric_money_with_alice_currency()
     {
-        $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("cross_parser_money.one_euro"));
+        $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixtures()->fixture("cross_parser_money.one_euro"));
+    }
+
+    /** @test */
+    public function all_celtric_money_with_alice_currency()
+    {
+        $this->assertEquals([
+                "one_euro" => new Money(100, new Currency("EUR")),
+                "two_dollars" => new Money(200, new Currency("USD"))
+        ], $this->fixtures()->namespaceFixtures("cross_parser_money"));
     }
 
     //---[ Helpers ]--------------------------------------------------------------------//
 
     /**
-     * @param string $fixtureIdentifier
      * @return mixed
      */
-    private function fixture($fixtureIdentifier)
+    private function fixtures()
     {
         $definitionFactory = new FixtureDefinitionFactory();
 
@@ -34,9 +42,7 @@ final class CrossParserTest extends \PHPUnit_Framework_TestCase
             "/(.*)/" => new CeltricStyleParser($definitionFactory)
         ];
 
-        $fixtures = new Fixtures(
+        return new Fixtures(
                 new RegexNamespaceBasedDefinitionLocator(new YAMLRawDataLocator(__DIR__ . "/../fixtures/"), $parsers));
-
-        return $fixtures->fixture($fixtureIdentifier);
     }
 }

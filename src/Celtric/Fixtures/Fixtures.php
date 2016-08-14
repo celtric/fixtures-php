@@ -23,6 +23,17 @@ final class Fixtures
     {
         $fixtureIdentifier = new FixtureIdentifier($fullFixtureName);
 
-        return $this->definitionLocator->locate($fixtureIdentifier)->instantiate();
+        return $this->definitionLocator->fixtureDefinition($fixtureIdentifier)->instantiate();
+    }
+
+    /**
+     * @param string $namespace
+     * @return array
+     */
+    public function namespaceFixtures($namespace)
+    {
+        $definitions = $this->definitionLocator->namespaceDefinitions($namespace);
+
+        return array_map(function (FixtureDefinition $d) { return $d->instantiate(); }, $definitions);
     }
 }

@@ -277,10 +277,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function can_derive_type_from_property_docblock()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->scalar(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([

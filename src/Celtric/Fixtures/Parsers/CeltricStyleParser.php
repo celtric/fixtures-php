@@ -6,6 +6,7 @@ use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
 use Celtric\Fixtures\FixtureDefinition;
+use phpDocumentor\Reflection\DocBlock;
 
 final class CeltricStyleParser implements RawDataParser
 {
@@ -126,8 +127,49 @@ final class CeltricStyleParser implements RawDataParser
                 return $this->definitionFactory->scalar($parsedValue);
             case $type === "array":
                 return $this->definitionFactory->arr($parsedValue);
+            case $this->classPropertyTypeIsAvailable($defaultType, $key):
+                return $this->definitionFactory->object($this->extractClassPropertyType($defaultType, $key), $parsedValue);
             default:
                 return $this->definitionFactory->object($type, $parsedValue);
         }
+    }
+
+    /**
+     * @param string $className
+     * @param string $propertyName
+     * @return bool
+     */
+    private function classPropertyTypeIsAvailable($className, $propertyName)
+    {
+        return $this->extractClassPropertyType($className, $propertyName) !== null;
+    }
+
+    /**
+     * @param string $className
+     * @param string $propertyName
+     * @return string|null
+     */
+    private function extractClassPropertyType($className, $propertyName)
+    {
+        if ($className === "array" || !property_exists($className, $propertyName)) {
+            return null;
+        }
+
+        $comment = (new \ReflectionProperty($className, $propertyName))->getDocComment();
+
+        if (empty($comment)) {
+            return null;
+        }
+
+        $docBlock = new DocBlock($comment);
+        $tags = $docBlock->getTagsByName("var");
+
+        if (empty($tags)) {
+            return null;
+        }
+
+        $namespace = (new \ReflectionClass($className))->getNamespaceName();
+
+        return "{$namespace}\\{$tags[0]->getContent()}";
     }
 }
