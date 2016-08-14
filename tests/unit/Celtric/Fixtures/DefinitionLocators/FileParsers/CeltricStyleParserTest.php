@@ -232,12 +232,12 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
-                "setFriend" => $this->definitionFactory->methodCall([
+                "setFriend" => $this->definitionFactory->methodCallArguments([
                     $this->definitionFactory->scalar("a_friend")
                 ])
             ]),
             "another_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
-                "setFriend" => $this->definitionFactory->methodCall([
+                "setFriend" => $this->definitionFactory->methodCallArguments([
                     $this->definitionFactory->scalar("a_friend")
                 ])
             ])
@@ -256,7 +256,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
-                "setFriend" => $this->definitionFactory->methodCall([
+                "setFriend" => $this->definitionFactory->methodCallArguments([
                     $this->definitionFactory->reference("a_friend", new NullDefinitionLocator())
                 ])
             ])

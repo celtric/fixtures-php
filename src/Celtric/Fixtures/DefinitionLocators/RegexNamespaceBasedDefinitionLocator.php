@@ -9,11 +9,11 @@ use Celtric\Fixtures\RawDataParser;
 
 final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
 {
-    /** @var RawDataParser[] */
-    private $parsers;
-
     /** @var RawDataLocator */
     private $rawDataLocator;
+
+    /** @var RawDataParser[] */
+    private $parsers;
 
     /**
      * @param RawDataLocator $rawDataLocator
@@ -21,8 +21,8 @@ final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
      */
     public function __construct(RawDataLocator $rawDataLocator, array $parsers)
     {
-        $this->parsers = $parsers;
         $this->rawDataLocator = $rawDataLocator;
+        $this->parsers = $parsers;
     }
 
     /**

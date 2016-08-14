@@ -118,7 +118,7 @@ final class CeltricStyleParser implements RawDataParser
             case $isReference:
                 return $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
             case $isMethod:
-                return $this->definitionFactory->methodCall(
+                return $this->definitionFactory->methodCallArguments(
                         $this->parseRecursively(is_array($value) ? $value : [$value], "array", $definitionLocator));
             case is_null($parsedValue):
                 return $this->definitionFactory->null();

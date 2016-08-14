@@ -4,7 +4,7 @@ namespace Celtric\Fixtures\FixtureTypes;
 
 use Celtric\Fixtures\FixtureDefinition;
 
-final class MethodCallFixture implements FixtureDefinition
+final class MethodCallArgumentsFixture implements FixtureDefinition
 {
     /** @var FixtureDefinition[] */
     private $arguments;
@@ -22,6 +22,6 @@ final class MethodCallFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        return (new ArrayFixture($this->arguments))->instantiate();
+        return array_map(function (FixtureDefinition $d) { return $d->instantiate(); }, $this->arguments);
     }
 }

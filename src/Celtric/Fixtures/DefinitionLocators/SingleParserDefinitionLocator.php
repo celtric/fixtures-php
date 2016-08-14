@@ -9,11 +9,11 @@ use Celtric\Fixtures\RawDataParser;
 
 final class SingleParserDefinitionLocator implements DefinitionLocator
 {
-    /** @var RawDataParser */
-    private $parser;
-
     /** @var RawDataLocator */
     private $rawDataLocator;
+
+    /** @var RawDataParser */
+    private $parser;
 
     /**
      * @param RawDataLocator $rawDataLocator
@@ -21,8 +21,8 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
      */
     public function __construct(RawDataLocator $rawDataLocator, RawDataParser $parser)
     {
-        $this->parser = $parser;
         $this->rawDataLocator = $rawDataLocator;
+        $this->parser = $parser;
     }
 
     /**

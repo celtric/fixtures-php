@@ -22,12 +22,6 @@ final class ArrayFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        $instantiatedData = [];
-
-        foreach ($this->data as $key => $value) {
-            $instantiatedData[$key] = $value->instantiate();
-        }
-
-        return $instantiatedData;
+        return array_map(function (FixtureDefinition $d) { return $d->instantiate(); }, $this->data);
     }
 }

@@ -3,7 +3,7 @@
 namespace Celtric\Fixtures;
 
 use Celtric\Fixtures\FixtureTypes\ArrayFixture;
-use Celtric\Fixtures\FixtureTypes\MethodCallFixture;
+use Celtric\Fixtures\FixtureTypes\MethodCallArgumentsFixture;
 use Celtric\Fixtures\FixtureTypes\NullFixture;
 use Celtric\Fixtures\FixtureTypes\ScalarFixture;
 use Celtric\Fixtures\FixtureTypes\ObjectFixture;
@@ -51,9 +51,9 @@ class FixtureDefinitionFactory
      * @param array $args
      * @return FixtureDefinition
      */
-    public function methodCall(array $args)
+    public function methodCallArguments(array $args)
     {
-        return new MethodCallFixture($args);
+        return new MethodCallArgumentsFixture($args);
     }
 
     /**

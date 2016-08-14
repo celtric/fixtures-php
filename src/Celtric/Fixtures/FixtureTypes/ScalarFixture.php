@@ -14,6 +14,9 @@ final class ScalarFixture implements FixtureDefinition
      */
     public function __construct($value)
     {
+        if (!is_scalar($value)) {
+            throw new \RuntimeException("Value must be scalar.");
+        }
         $this->value = $value;
     }
 
