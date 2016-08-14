@@ -7,5 +7,11 @@ interface DefinitionLocator
      * @param FixtureIdentifier $fixtureIdentifier
      * @return FixtureDefinition
      */
-    public function locate(FixtureIdentifier $fixtureIdentifier);
+    public function retrieveFixtureDefinition(FixtureIdentifier $fixtureIdentifier);
+
+    /**
+     * @param string $namespace
+     * @return FixtureDefinition[]
+     */
+    public function retrieveNamespaceDefinitions($namespace);
 }

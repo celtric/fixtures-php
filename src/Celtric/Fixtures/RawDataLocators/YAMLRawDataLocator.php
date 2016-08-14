@@ -3,7 +3,6 @@
 namespace Celtric\Fixtures\RawDataLocators;
 
 use Celtric\Fixtures\RawDataLocator;
-use Celtric\Fixtures\FixtureIdentifier;
 use Symfony\Component\Yaml\Parser;
 
 final class YAMLRawDataLocator implements RawDataLocator
@@ -22,19 +21,19 @@ final class YAMLRawDataLocator implements RawDataLocator
     /**
      * @inheritDoc
      */
-    public function locate(FixtureIdentifier $fixtureIdentifier)
+    public function retrieveRawData($namespace)
     {
-        $fileContent = file_get_contents($this->toFilePath($fixtureIdentifier));
+        $fileContent = file_get_contents($this->toFilePath($namespace));
 
         return (new Parser())->parse($fileContent);
     }
 
     /**
-     * @param FixtureIdentifier $fixtureIdentifier
+     * @param string $namespace
      * @return string
      */
-    private function toFilePath(FixtureIdentifier $fixtureIdentifier)
+    private function toFilePath($namespace)
     {
-        return $this->rootPath . str_replace(".", DIRECTORY_SEPARATOR, $fixtureIdentifier->getNamespace()) . ".yml";
+        return $this->rootPath . str_replace(".", DIRECTORY_SEPARATOR, $namespace) . ".yml";
     }
 }

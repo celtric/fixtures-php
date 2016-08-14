@@ -50,4 +50,10 @@ final class TypeTest extends CeltricStyleFunctionalTestCase
 
         $this->assertEquals($person, $this->fixture("company.people.ricard_with_late_friend"));
     }
+
+    /** @test */
+    public function derived_property_type()
+    {
+        $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("money.one_euro_without_currency_type"));
+    }
 }
