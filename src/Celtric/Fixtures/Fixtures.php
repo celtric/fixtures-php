@@ -2,6 +2,11 @@
 
 namespace Celtric\Fixtures;
 
+use Celtric\Fixtures\DefinitionLocators\SingleParserDefinitionLocator;
+use Celtric\Fixtures\Parsers\AliceStyleParser;
+use Celtric\Fixtures\Parsers\CeltricStyleParser;
+use Celtric\Fixtures\RawDataLocators\YAMLRawDataLocator;
+
 final class Fixtures
 {
     /** @var DefinitionLocator */
@@ -13,6 +18,32 @@ final class Fixtures
     public function __construct(DefinitionLocator $definitionLocator)
     {
         $this->definitionLocator = $definitionLocator;
+    }
+
+    /**
+     * @param string $fixturesPath
+     * @return Fixtures
+     */
+    public static function celtricStyle($fixturesPath)
+    {
+        $definitionLocator = new SingleParserDefinitionLocator(
+                new YAMLRawDataLocator($fixturesPath),
+                new CeltricStyleParser(new FixtureDefinitionFactory()));
+
+        return new self($definitionLocator);
+    }
+
+    /**
+     * @param string $fixturesPath
+     * @return Fixtures
+     */
+    public static function aliceStyle($fixturesPath)
+    {
+        $definitionLocator = new SingleParserDefinitionLocator(
+                new YAMLRawDataLocator($fixturesPath),
+                new AliceStyleParser(new FixtureDefinitionFactory()));
+
+        return new self($definitionLocator);
     }
 
     /**
