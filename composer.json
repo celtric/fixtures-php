@@ -1,4 +1,8 @@
 {
+    "name": "celtric/fixtures",
+    "description": "A library to define and load static fixtures",
+    "license": "MIT",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Celtric\\Fixtures\\": "src/Celtric/Fixtures"
