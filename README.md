@@ -8,7 +8,7 @@ Celtric Fixtures - PHP
 Introduction
 ------------
 
-This is a small library that aims to offer an easy way to define static fixtures. By default it uses YAML files and a custom format (inspired by [Alice](https://github.com/nelmio/alice)), but tries to give several extension points so any developer can easily customize it.
+This is a small library that aims to offer an easy way to define static fixtures. By default it uses YAML files and a custom format (inspired by [Alice](https://github.com/nelmio/alice) format, which is also partially supported using `AliceStyleParser` included in this package), but tries to give several extension points so any developer can easily customize it.
 
 ### What this library is not
 
@@ -61,7 +61,7 @@ namespace Tests;
 class FooTest extends \PHPUnit_Framework_TestCase
 {
     /** @test */
-    public function can_load__fixtures()
+    public function can_load_fixtures()
     {
         $this->assertEquals(new Person("Ricard", 30), $this->fixture("people.ricard"));
     }
@@ -135,4 +135,4 @@ euro<Foo\Bar\Currency>:
 Development status
 ------------------
 
-This library is currently in beta and any feedback will be welcomed.
+This library is currently in beta. Any feedback will be welcomed, and you're encouraged to provide feedback via issues or PRs.
