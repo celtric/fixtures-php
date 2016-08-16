@@ -2,15 +2,24 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\Parsers\CeltricStyleParser;
+use Celtric\Fixtures\Fixtures;
 
-abstract class CeltricStyleFunctionalTestCase extends SingleParserTestCase
+abstract class CeltricStyleFunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @inheritdoc
+     * @return Fixtures
      */
-    protected function parser()
+    protected function fixtures()
     {
-        return new CeltricStyleParser();
+        return Fixtures::celtricStyle(__DIR__ . "/../fixtures/");
+    }
+
+    /**
+     * @param string $fixtureIdentifier
+     * @return mixed
+     */
+    protected function fixture($fixtureIdentifier)
+    {
+        return $this->fixtures()->fixture($fixtureIdentifier);
     }
 }

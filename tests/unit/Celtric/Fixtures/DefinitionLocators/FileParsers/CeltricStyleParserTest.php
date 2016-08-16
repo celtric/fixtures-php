@@ -2,16 +2,33 @@
 
 namespace Tests\Unit\Celtric\Fixtures\DefinitionLocators\FileParsers;
 
-use Celtric\Fixtures\Parsers\CeltricStyleParser;
 use Celtric\Fixtures\FixtureDefinition;
+use Celtric\Fixtures\FixtureDefinitionFactory;
+use Celtric\Fixtures\Parsers\CeltricStyleParser;
+use Tests\Utils\NullDefinitionLocator;
 
 final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var FixtureDefinitionFactory */
+    private $definitionFactory;
+
+    /** @var CeltricStyleParser */
+    private $parser;
+
+    /**
+     * @inheritDoc
+     */
+    protected function setUp()
+    {
+        $this->definitionFactory = new FixtureDefinitionFactory();
+        $this->parser = new CeltricStyleParser($this->definitionFactory);
+    }
+
     /** @test */
     public function null_value()
     {
         $this->assertEquals([
-            "null_value" => new FixtureDefinition("null", null)
+            "null_value" => $this->definitionFactory->null()
         ], $this->parse([
             "null_value" => null
         ]));
@@ -21,7 +38,7 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function empty_array()
     {
         $this->assertEquals([
-            "empty_array" => new FixtureDefinition("array", [])
+            "empty_array" => $this->definitionFactory->arr([])
         ], $this->parse([
             "empty_array<array>" => null
         ]));
@@ -31,11 +48,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function scalar_values()
     {
         $this->assertEquals([
-            "scalar_values" => new FixtureDefinition("array", [
-                "int" => new FixtureDefinition("integer", 123),
-                "float" => new FixtureDefinition("float", 123.456),
-                "string" => new FixtureDefinition("string", "Foo"),
-                "bool" => new FixtureDefinition("boolean", true)
+            "scalar_values" => $this->definitionFactory->arr([
+                "int" => $this->definitionFactory->scalar(123),
+                "float" => $this->definitionFactory->scalar(123.456),
+                "string" => $this->definitionFactory->scalar("Foo"),
+                "bool" => $this->definitionFactory->scalar(true)
             ])
         ], $this->parse([
             "scalar_values" => [
@@ -51,11 +68,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_array()
     {
         $this->assertEquals([
-            "multidimensional_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar"),
-                "one" => new FixtureDefinition("array", [
-                    "two" => new FixtureDefinition("array", [
-                        "three" => new FixtureDefinition("string", "foobar")
+            "multidimensional_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->scalar("bar"),
+                "one" => $this->definitionFactory->arr([
+                    "two" => $this->definitionFactory->arr([
+                        "three" => $this->definitionFactory->scalar("foobar")
                     ])
                 ])
             ])
@@ -75,8 +92,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function typed_array()
     {
         $this->assertEquals([
-            "typed_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar")
+            "typed_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->scalar("bar")
             ])
         ], $this->parse([
             "typed_array<array>" => [
@@ -89,11 +106,11 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function multidimensional_typed_array()
     {
         $this->assertEquals([
-            "multidimensional_typed_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("string", "bar"),
-                "one" => new FixtureDefinition("array", [
-                    "two" => new FixtureDefinition("array", [
-                        "three" => new FixtureDefinition("string", "foobar")
+            "multidimensional_typed_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->scalar("bar"),
+                "one" => $this->definitionFactory->arr([
+                    "two" => $this->definitionFactory->arr([
+                        "three" => $this->definitionFactory->scalar("foobar")
                     ])
                 ])
             ])
@@ -113,8 +130,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_object()
     {
         $this->assertEquals([
-            "euro" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                "isoCode" => new FixtureDefinition("string", "EUR")
+            "euro" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                "isoCode" => $this->definitionFactory->scalar("EUR")
             ])
         ], $this->parse([
             "euro<Tests\\Utils\\Currency>" => [
@@ -127,10 +144,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_object()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->scalar(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([
@@ -147,10 +164,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function root_type()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->scalar(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([
@@ -168,8 +185,8 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function simple_reference()
     {
         $this->assertEquals([
-            "same_file_array" => new FixtureDefinition("array", [
-                "foo" => new FixtureDefinition("reference", "references.bar")
+            "same_file_array" => $this->definitionFactory->arr([
+                "foo" => $this->definitionFactory->reference("references.bar", new NullDefinitionLocator())
             ])
         ], $this->parse([
             "same_file_array" => [
@@ -182,15 +199,15 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function complex_references()
     {
         $this->assertEquals([
-            "ref" => new FixtureDefinition("array", [
-                "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                "name" => new FixtureDefinition("reference", "references.name"),
-                "ref" => new FixtureDefinition("array", [
-                    "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                    "name" => new FixtureDefinition("reference", "references.name"),
-                    "ref" => new FixtureDefinition("array", [
-                        "ref2" => new FixtureDefinition("reference", "references.ref2"),
-                        "name" => new FixtureDefinition("reference", "references.name")
+            "ref" => $this->definitionFactory->arr([
+                "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator()),
+                "ref" => $this->definitionFactory->arr([
+                    "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                    "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator()),
+                    "ref" => $this->definitionFactory->arr([
+                        "ref2" => $this->definitionFactory->reference("references.ref2", new NullDefinitionLocator()),
+                        "name" => $this->definitionFactory->reference("references.name", new NullDefinitionLocator())
                     ])
                 ])
             ])
@@ -214,14 +231,14 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("string", "a_friend")
+            "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCallArguments([
+                    $this->definitionFactory->scalar("a_friend")
                 ])
             ]),
-            "another_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("string", "a_friend")
+            "another_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCallArguments([
+                    $this->definitionFactory->scalar("a_friend")
                 ])
             ])
         ], $this->parse([
@@ -238,9 +255,9 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function method_call_with_reference()
     {
         $this->assertEquals([
-            "a_person" => new FixtureDefinition("Tests\\Utils\\Person", [
-                "setFriend" => new FixtureDefinition("method_call", [
-                    new FixtureDefinition("reference", "a_friend")
+            "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
+                "setFriend" => $this->definitionFactory->methodCallArguments([
+                    $this->definitionFactory->reference("a_friend", new NullDefinitionLocator())
                 ])
             ])
         ], $this->parse([
@@ -260,10 +277,10 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
     public function can_derive_type_from_property_docblock()
     {
         $this->assertEquals([
-            "one_euro" => new FixtureDefinition("Tests\\Utils\\Money", [
-                "amount" => new FixtureDefinition("integer", 100),
-                "currency" => new FixtureDefinition("Tests\\Utils\\Currency", [
-                    "isoCode" => new FixtureDefinition("string", "EUR")
+            "one_euro" => $this->definitionFactory->object("Tests\\Utils\\Money", [
+                "amount" => $this->definitionFactory->scalar(100),
+                "currency" => $this->definitionFactory->object("Tests\\Utils\\Currency", [
+                    "isoCode" => $this->definitionFactory->scalar("EUR")
                 ])
             ])
         ], $this->parse([
@@ -284,6 +301,6 @@ final class CeltricStyleParserTest extends \PHPUnit_Framework_TestCase
      */
     private function parse(array $rawData)
     {
-        return (new CeltricStyleParser())->parse($rawData);
+        return $this->parser->parse($rawData, new NullDefinitionLocator());
     }
 }

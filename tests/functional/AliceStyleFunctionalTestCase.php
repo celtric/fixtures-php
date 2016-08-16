@@ -2,15 +2,24 @@
 
 namespace Tests\Functional;
 
-use Celtric\Fixtures\Parsers\AliceStyleParser;
+use Celtric\Fixtures\Fixtures;
 
-abstract class AliceStyleFunctionalTestCase extends SingleParserTestCase
+abstract class AliceStyleFunctionalTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @inheritdoc
+     * @return Fixtures
      */
-    protected function parser()
+    protected function fixtures()
     {
-        return new AliceStyleParser();
+        return Fixtures::aliceStyle(__DIR__ . "/../fixtures/");
+    }
+
+    /**
+     * @param string $fixtureIdentifier
+     * @return mixed
+     */
+    protected function fixture($fixtureIdentifier)
+    {
+        return $this->fixtures()->fixture($fixtureIdentifier);
     }
 }

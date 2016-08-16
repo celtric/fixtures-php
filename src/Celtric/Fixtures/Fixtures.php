@@ -2,6 +2,11 @@
 
 namespace Celtric\Fixtures;
 
+use Celtric\Fixtures\DefinitionLocators\SingleParserDefinitionLocator;
+use Celtric\Fixtures\Parsers\AliceStyleParser;
+use Celtric\Fixtures\Parsers\CeltricStyleParser;
+use Celtric\Fixtures\RawDataLocators\YAMLRawDataLocator;
+
 final class Fixtures
 {
     /** @var DefinitionLocator */
@@ -16,6 +21,32 @@ final class Fixtures
     }
 
     /**
+     * @param string $fixturesPath
+     * @return Fixtures
+     */
+    public static function celtricStyle($fixturesPath)
+    {
+        $definitionLocator = new SingleParserDefinitionLocator(
+                new YAMLRawDataLocator($fixturesPath),
+                new CeltricStyleParser(new FixtureDefinitionFactory()));
+
+        return new self($definitionLocator);
+    }
+
+    /**
+     * @param string $fixturesPath
+     * @return Fixtures
+     */
+    public static function aliceStyle($fixturesPath)
+    {
+        $definitionLocator = new SingleParserDefinitionLocator(
+                new YAMLRawDataLocator($fixturesPath),
+                new AliceStyleParser(new FixtureDefinitionFactory()));
+
+        return new self($definitionLocator);
+    }
+
+    /**
      * @param string $fullFixtureName
      * @return mixed
      */
@@ -23,9 +54,7 @@ final class Fixtures
     {
         $fixtureIdentifier = new FixtureIdentifier($fullFixtureName);
 
-        $definition = $this->definitionLocator->retrieveFixtureDefinition($fixtureIdentifier);
-
-        return $this->instantiate($definition);
+        return $this->definitionLocator->fixtureDefinition($fixtureIdentifier)->instantiate();
     }
 
     /**
@@ -34,17 +63,8 @@ final class Fixtures
      */
     public function namespaceFixtures($namespace)
     {
-        $definitions = $this->definitionLocator->retrieveNamespaceDefinitions($namespace);
+        $definitions = $this->definitionLocator->namespaceDefinitions($namespace);
 
-        return array_map([$this, "instantiate"], $definitions);
-    }
-
-    /**
-     * @param $definition
-     * @return mixed
-     */
-    private function instantiate($definition)
-    {
-        return (new FixtureInstantiator($this->definitionLocator))->instantiate($definition);
+        return array_map(function (FixtureDefinition $d) { return $d->instantiate(); }, $definitions);
     }
 }

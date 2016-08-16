@@ -9,11 +9,11 @@ use Celtric\Fixtures\RawDataParser;
 
 final class SingleParserDefinitionLocator implements DefinitionLocator
 {
-    /** @var RawDataParser */
-    private $parser;
-
     /** @var RawDataLocator */
     private $rawDataLocator;
+
+    /** @var RawDataParser */
+    private $parser;
 
     /**
      * @param RawDataLocator $rawDataLocator
@@ -21,16 +21,16 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
      */
     public function __construct(RawDataLocator $rawDataLocator, RawDataParser $parser)
     {
-        $this->parser = $parser;
         $this->rawDataLocator = $rawDataLocator;
+        $this->parser = $parser;
     }
 
     /**
      * @inheritDoc
      */
-    public function retrieveFixtureDefinition(FixtureIdentifier $fixtureIdentifier)
+    public function fixtureDefinition(FixtureIdentifier $fixtureIdentifier)
     {
-        $definitions = $this->retrieveNamespaceDefinitions($fixtureIdentifier->getNamespace());
+        $definitions = $this->namespaceDefinitions($fixtureIdentifier->getNamespace());
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");
@@ -42,10 +42,10 @@ final class SingleParserDefinitionLocator implements DefinitionLocator
     /**
      * @inheritDoc
      */
-    public function retrieveNamespaceDefinitions($namespace)
+    public function namespaceDefinitions($namespace)
     {
         $rawData = $this->rawDataLocator->retrieveRawData($namespace);
 
-        return $this->parser->parse($rawData);
+        return $this->parser->parse($rawData, $this);
     }
 }

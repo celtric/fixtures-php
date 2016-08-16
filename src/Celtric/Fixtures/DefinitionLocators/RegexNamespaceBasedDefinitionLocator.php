@@ -9,11 +9,11 @@ use Celtric\Fixtures\RawDataParser;
 
 final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
 {
-    /** @var RawDataParser[] */
-    private $parsers;
-
     /** @var RawDataLocator */
     private $rawDataLocator;
+
+    /** @var RawDataParser[] */
+    private $parsers;
 
     /**
      * @param RawDataLocator $rawDataLocator
@@ -21,16 +21,16 @@ final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
      */
     public function __construct(RawDataLocator $rawDataLocator, array $parsers)
     {
-        $this->parsers = $parsers;
         $this->rawDataLocator = $rawDataLocator;
+        $this->parsers = $parsers;
     }
 
     /**
      * @inheritDoc
      */
-    public function retrieveFixtureDefinition(FixtureIdentifier $fixtureIdentifier)
+    public function fixtureDefinition(FixtureIdentifier $fixtureIdentifier)
     {
-        $definitions = $this->retrieveNamespaceDefinitions($fixtureIdentifier->getNamespace());
+        $definitions = $this->namespaceDefinitions($fixtureIdentifier->getNamespace());
 
         if (empty($definitions[$fixtureIdentifier->name()])) {
             throw new \RuntimeException("Could not find fixture \"{$fixtureIdentifier->toString()}\"");
@@ -42,13 +42,13 @@ final class RegexNamespaceBasedDefinitionLocator implements DefinitionLocator
     /**
      * @inheritDoc
      */
-    public function retrieveNamespaceDefinitions($namespace)
+    public function namespaceDefinitions($namespace)
     {
         $rawData = $this->rawDataLocator->retrieveRawData($namespace);
 
         foreach ($this->parsers as $namespaceMatcher => $parser) {
             if (preg_match($namespaceMatcher, $namespace)) {
-                return $parser->parse($rawData);
+                return $parser->parse($rawData, $this);
             }
         }
 

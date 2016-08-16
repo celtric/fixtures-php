@@ -2,52 +2,37 @@
 
 namespace Celtric\Fixtures\Parsers;
 
+use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinition;
+use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
 
 final class AliceStyleParser implements RawDataParser
 {
+    /** @var FixtureDefinitionFactory */
+    private $definitionFactory;
+
+    /**
+     * @param FixtureDefinitionFactory $definitionFactory
+     */
+    public function __construct(FixtureDefinitionFactory $definitionFactory)
+    {
+        $this->definitionFactory = $definitionFactory;
+    }
+
     /**
      * @inheritDoc
      */
-    public function parse(array $rawData)
+    public function parse(array $rawData, DefinitionLocator $definitionLocator)
     {
         $definitions = [];
 
-        foreach ($rawData as $type => $typeRawDefinitions) {
-            foreach ($typeRawDefinitions as $name => $values) {
-                $isRange = preg_match("/(.*)\\{(\\d+)(\\.{2,})(\\d+)\\}/i", $name, $matches);
-
-                if ($isRange) {
-                    $baseName = $matches[1];
-                    $from = $matches[2];
-                    $to = $matches[4];
-
-                    foreach (range($from, $to) as $i) {
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $values));
-                    }
-
-                    continue;
-                }
-
-                $isCustomList = preg_match("/(.*)\\{([^,]+(\\s*,\\s*[^,]+)*)\\}/", $name, $matches);
-
-                if ($isCustomList) {
-                    $baseName = $matches[1];
-                    $listItems = array_map("trim", explode(",", $matches[2]));
-
-                    foreach ($listItems as $i) {
-                        $itemValues = array_map(function($value) use ($i) {
-                            return str_replace("<current()>", $i, $value);
-                        }, $values);
-
-                        $definitions[$baseName . $i] = new FixtureDefinition($type, $this->parseValues($type, $itemValues));
-                    }
-
-                    continue;
-                }
-
-                $definitions[$name] = new FixtureDefinition($type, $this->parseValues($type, $values));
+        foreach ($rawData as $className => $rawDefinitionsOfThisClass) {
+            /** @var array $rawDefinitionsOfThisClass*/
+            foreach ($rawDefinitionsOfThisClass as $fixtureName => $fixtureValues) {
+                $definitions[$fixtureName] = $this->definitionFactory->object(
+                        $className,
+                        $this->parseSingleFixtureValues($className, $fixtureValues, $definitionLocator));
             }
         }
 
@@ -57,45 +42,45 @@ final class AliceStyleParser implements RawDataParser
     /**
      * @param string $type
      * @param array $rawValues
+     * @param DefinitionLocator $definitionLocator
      * @return FixtureDefinition[]
      */
-    private function parseValues($type, array $rawValues)
+    private function parseSingleFixtureValues($type, array $rawValues, DefinitionLocator $definitionLocator)
     {
         $parsedValues = [];
 
         foreach ($rawValues as $key => $value) {
-            $isReference = is_string($value) && $value[0] === "@";
-
-            if ($isReference) {
-                $parsedValues[$key] = new FixtureDefinition("reference", substr($value, 1));
-                continue;
-            }
-
-            $isMethod = method_exists($type, $key);
-
-            if ($isMethod) {
-                $parsedValues[$key] = new FixtureDefinition("method_call", $this->parseValues($type, $value));
-                continue;
-            }
-
-            $parsedValues[$key] = new FixtureDefinition($this->resolveType($value), $value);
+            $parsedValues[$key] = $this->toDefinition($key, $type, $value, $definitionLocator);
         }
 
         return $parsedValues;
     }
 
     /**
+     * @param string $key
+     * @param string $type
      * @param mixed $value
-     * @return string
+     * @param DefinitionLocator $definitionLocator
+     * @return FixtureDefinition
      */
-    private function resolveType($value)
+    private function toDefinition($key, $type, $value, DefinitionLocator $definitionLocator)
     {
-        $nativeType = strtolower(gettype($value));
+        $isReference = is_string($value) && $value[0] === "@";
+        $isMethod = method_exists($type, $key);
 
-        if ($nativeType === "double") {
-            return "float";
+        switch (true) {
+            case $isReference:
+                return $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
+            case $isMethod:
+                return $this->definitionFactory->methodCallArguments($this->parseSingleFixtureValues($type, $value, $definitionLocator));
+            case is_null($value):
+                return $this->definitionFactory->null();
+            case is_scalar($value):
+                return $this->definitionFactory->scalar($value);
+            case $type === "array":
+                return $this->definitionFactory->arr($value);
+            default:
+                return $this->definitionFactory->object($type, $value);
         }
-
-        return $nativeType;
     }
 }
