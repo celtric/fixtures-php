@@ -52,6 +52,14 @@ final class Person
     }
 
     /**
+     * @return Person|null
+     */
+    public function friend()
+    {
+        return $this->friend;
+    }
+
+    /**
      * @param int $x
      * @param int $y
      * @param int $z

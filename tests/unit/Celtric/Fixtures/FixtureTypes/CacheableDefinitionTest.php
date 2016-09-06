@@ -4,7 +4,9 @@ namespace Tests\Unit\Celtric\Fixtures\FixtureTypes;
 
 use Celtric\Fixtures\FixtureDefinition;
 use Celtric\Fixtures\FixtureTypes\CacheableDefinition;
+use Celtric\Fixtures\FixtureTypes\ObjectFixture;
 use Celtric\Fixtures\FixtureTypes\ScalarFixture;
+use Tests\Utils\Person;
 
 final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,5 +30,15 @@ final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
         $definition->instantiate();
 
         $spy->instantiate()->shouldHaveBeenCalledTimes(1);
+    }
+
+    /** @test */
+    public function clones_objects()
+    {
+        $definition = new CacheableDefinition(new ObjectFixture(Person::class, []));
+
+        $definition->instantiate()->setFriend(new Person("A friend", 30));
+
+        $this->assertNull($definition->instantiate()->friend());
     }
 }

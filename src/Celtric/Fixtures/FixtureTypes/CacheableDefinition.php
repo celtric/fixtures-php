@@ -29,6 +29,6 @@ final class CacheableDefinition implements FixtureDefinition
             $this->cache = $this->definition->instantiate();
         }
 
-        return $this->cache;
+        return is_object($this->cache) ? clone $this->cache : $this->cache;
     }
 }
