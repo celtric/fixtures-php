@@ -19,7 +19,7 @@ final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function only_calls_definition_once()
+    public function only_calls_wrapped_definition_once()
     {
         $spy = $this->prophesize(FixtureDefinition::class);
         $spy->instantiate()->willReturn("Ricard");

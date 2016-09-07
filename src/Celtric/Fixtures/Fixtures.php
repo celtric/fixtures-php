@@ -2,6 +2,7 @@
 
 namespace Celtric\Fixtures;
 
+use Celtric\Fixtures\DefinitionLocators\LocatorCacher;
 use Celtric\Fixtures\DefinitionLocators\SingleParserDefinitionLocator;
 use Celtric\Fixtures\Parsers\AliceStyleParser;
 use Celtric\Fixtures\Parsers\CeltricStyleParser;
@@ -30,7 +31,7 @@ final class Fixtures
                 new YAMLRawDataLocator($fixturesPath),
                 new CeltricStyleParser(new CachedDefinitionFactory()));
 
-        return new self($definitionLocator);
+        return new self(new LocatorCacher($definitionLocator));
     }
 
     /**
@@ -43,7 +44,7 @@ final class Fixtures
                 new YAMLRawDataLocator($fixturesPath),
                 new AliceStyleParser(new CachedDefinitionFactory()));
 
-        return new self($definitionLocator);
+        return new self(new LocatorCacher($definitionLocator));
     }
 
     /**
