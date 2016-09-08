@@ -14,14 +14,14 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      */
     public function arr(array $data)
     {
-        return $this->cache(serialize($data), parent::arr($data));
+        return $this->cache($this->serialize($data), parent::arr($data));
     }
     /**
      * @inheritDoc
      */
     public function object($className, array $properties)
     {
-        return $this->cache(serialize([$className, $properties]), parent::object($className, $properties));
+        return $this->cache($this->serialize([$className, $properties]), parent::object($className, $properties));
     }
 
     /**
@@ -29,7 +29,7 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      */
     public function reference($reference, DefinitionLocator $definitionLocator)
     {
-        return $this->cache(serialize($reference), parent::reference($reference, $definitionLocator));
+        return $this->cache($reference, parent::reference($reference, $definitionLocator));
     }
 
     /**
@@ -44,5 +44,14 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
         }
 
         return static::$cache[$hash];
+    }
+
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    private function serialize($data)
+    {
+        return md5(serialize($data));
     }
 }
