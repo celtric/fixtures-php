@@ -3,7 +3,6 @@
 namespace Celtric\Fixtures;
 
 use Celtric\Fixtures\FixtureTypes\ArrayFixture;
-use Celtric\Fixtures\FixtureTypes\MethodCallArgumentsFixture;
 use Celtric\Fixtures\FixtureTypes\NullFixture;
 use Celtric\Fixtures\FixtureTypes\ScalarFixture;
 use Celtric\Fixtures\FixtureTypes\ObjectFixture;
@@ -45,15 +44,6 @@ class FixtureDefinitionFactory
     public function object($className, array $properties)
     {
         return new ObjectFixture($className, $properties);
-    }
-
-    /**
-     * @param array $args
-     * @return FixtureDefinition
-     */
-    public function methodCallArguments(array $args)
-    {
-        return new MethodCallArgumentsFixture($args);
     }
 
     /**

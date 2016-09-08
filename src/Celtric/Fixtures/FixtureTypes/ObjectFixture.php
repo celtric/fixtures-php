@@ -30,7 +30,9 @@ final class ObjectFixture implements FixtureDefinition
         $instance = (new \ReflectionClass($this->className))->newInstanceWithoutConstructor();
 
         foreach ($this->properties as $key => $value) {
-            if ($value instanceof MethodCallArgumentsFixture) {
+            $isMethodCall = method_exists($instance, $key);
+
+            if ($isMethodCall) {
                 $arguments = $value->instantiate();
                 call_user_func_array([$instance, $key], $arguments);
                 continue;

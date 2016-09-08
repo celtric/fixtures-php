@@ -103,7 +103,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
-                "setFriend" => $this->definitionFactory->methodCallArguments([
+                "setFriend" => $this->definitionFactory->arr([
                     $this->definitionFactory->scalar("a_friend")
                 ])
             ])
@@ -123,7 +123,7 @@ final class AliceStyleParserTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals([
             "a_person" => $this->definitionFactory->object("Tests\\Utils\\Person", [
-                "setFriend" => $this->definitionFactory->methodCallArguments([
+                "setFriend" => $this->definitionFactory->arr([
                     $this->definitionFactory->reference("a_friend", new NullDefinitionLocator())
                 ])
             ])

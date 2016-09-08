@@ -72,7 +72,7 @@ final class AliceStyleParser implements RawDataParser
             case $isReference:
                 return $this->definitionFactory->reference(substr($value, 1), $definitionLocator);
             case $isMethod:
-                return $this->definitionFactory->methodCallArguments($this->parseSingleFixtureValues($type, $value, $definitionLocator));
+                return $this->definitionFactory->arr($this->parseSingleFixtureValues($type, $value, $definitionLocator));
             case is_null($value):
                 return $this->definitionFactory->null();
             case is_scalar($value):
