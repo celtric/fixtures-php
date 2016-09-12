@@ -115,6 +115,8 @@ final class CeltricStyleParser implements RawDataParser
 
         if (preg_match("/^(.*)<(.*)>$/", $key, $matches)) {
             $type = $matches[2];
+        } elseif ($this->classPropertyTypeIsAvailable($defaultType, $key)) {
+            $type = $this->extractClassPropertyType($defaultType, $key);
         } elseif (is_array($value)) {
             $type = $defaultType;
         }
@@ -133,8 +135,6 @@ final class CeltricStyleParser implements RawDataParser
                 return $this->definitionFactory->scalar($parsedValue);
             case $type === "array":
                 return $this->definitionFactory->arr($parsedValue);
-            case $this->classPropertyTypeIsAvailable($defaultType, $key):
-                return $this->definitionFactory->object($this->extractClassPropertyType($defaultType, $key), $parsedValue);
             default:
                 return $this->definitionFactory->object($type, $parsedValue);
         }
@@ -174,8 +174,27 @@ final class CeltricStyleParser implements RawDataParser
             return null;
         }
 
+        $docBlockType = $tags[0]->getContent();
+
+        if ($this->isNativeType($docBlockType)) {
+            return $docBlockType;
+        }
+
+        if (substr($docBlockType, 0, 1) === "\\") {
+            return $docBlockType;
+        }
+
         $namespace = (new \ReflectionClass($className))->getNamespaceName();
 
-        return "{$namespace}\\{$tags[0]->getContent()}";
+        return "{$namespace}\\{$docBlockType}";
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    private function isNativeType($type)
+    {
+        return in_array($type, ['int', 'integer', 'bool', 'boolean', 'string', 'null'], true);
     }
 }
