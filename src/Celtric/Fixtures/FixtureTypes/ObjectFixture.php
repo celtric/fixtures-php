@@ -27,9 +27,21 @@ final class ObjectFixture implements FixtureDefinition
      */
     public function instantiate()
     {
-        $instance = (new \ReflectionClass($this->className))->newInstanceWithoutConstructor();
+        $hasConstructor = array_key_exists("__construct", $this->properties);
+
+        if ($hasConstructor) {
+            $instance = (new \ReflectionClass($this->className))->newInstance($this->properties["__construct"]);
+        } else {
+            $instance = (new \ReflectionClass($this->className))->newInstanceWithoutConstructor();
+        }
 
         foreach ($this->properties as $key => $value) {
+            $isConstructor = $key === "__construct";
+
+            if ($isConstructor) {
+                continue;
+            }
+
             $isMethodCall = method_exists($instance, $key);
 
             if ($isMethodCall) {

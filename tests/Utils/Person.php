@@ -13,6 +13,9 @@ final class Person
     /** @var int */
     private $age;
 
+    /** @var \DateTimeImmutable */
+    private $birthday;
+
     /** @var Person|null */
     private $friend;
 
@@ -41,6 +44,14 @@ final class Person
     public function id()
     {
         return $this->id;
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
     }
 
     /**

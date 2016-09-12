@@ -56,4 +56,10 @@ final class TypeTest extends CeltricStyleFunctionalTestCase
     {
         $this->assertEquals(new Money(100, new Currency("EUR")), $this->fixture("money.one_euro_without_currency_type"));
     }
+
+    /** @test */
+    public function uses_constructor_if_no_properties_are_defined()
+    {
+        $this->assertEquals(new \DateTimeImmutable("2016-09-12 10:19:00"), $this->fixture("company.people.person_with_birthday")->getBirthday());
+    }
 }

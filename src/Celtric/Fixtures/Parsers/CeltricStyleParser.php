@@ -61,7 +61,13 @@ final class CeltricStyleParser implements RawDataParser
      */
     private function parseNonArrayRawData($rawData, $defaultType)
     {
-        return $defaultType === "array" ? (array) $rawData : $rawData;
+        if (class_exists($defaultType)) {
+            return ["__construct" => $rawData];
+        } elseif ($defaultType === "array") {
+            return (array) $rawData;
+        } else {
+            return $rawData;
+        }
     }
 
     /**
