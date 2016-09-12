@@ -3,6 +3,7 @@ Celtric Fixtures - PHP
 
 [![Build Status](https://travis-ci.org/celtric/fixtures-php.svg?branch=master)](https://travis-ci.org/celtric/fixtures-php)
 [![Latest Stable Version](https://poser.pugx.org/celtric/fixtures/v/stable)](https://packagist.org/packages/celtric/fixtures) 
+[![Latest Unstable Version](https://poser.pugx.org/celtric/fixtures/v/unstable)](https://packagist.org/packages/celtric/fixtures)
 [![License](https://poser.pugx.org/celtric/fixtures/license)](https://packagist.org/packages/celtric/fixtures) 
 
 Introduction
