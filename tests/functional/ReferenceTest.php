@@ -67,4 +67,10 @@ final class ReferenceTest extends CeltricStyleFunctionalTestCase
             "balance" => new Money(100, new Currency("EUR"))
         ], $this->fixture("references.external_file_different_namespaces"));
     }
+
+    /** @test */
+    public function reference_property()
+    {
+        $this->assertEquals("Ricard", $this->fixture("references.reference_property")['name']);
+    }
 }

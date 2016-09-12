@@ -30,3 +30,6 @@ external_file_same_namespace:
 external_file_different_namespaces:
     person: "@company.people.ricard"
     balance: "@money.one_euro"
+
+reference_property:
+    name: "@company.people.ricard->name"
