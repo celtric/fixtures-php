@@ -12,14 +12,19 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
     /** @var FixtureDefinitionFactory */
     private $wrappedFactory;
 
+    /** @var bool */
+    private $cloneObjects;
+
     /**
      * @param \ArrayObject $cache
      * @param FixtureDefinitionFactory $wrappedFactory
+     * @param bool $cloneObjects
      */
-    public function __construct(\ArrayObject $cache, FixtureDefinitionFactory $wrappedFactory)
+    public function __construct(\ArrayObject $cache, FixtureDefinitionFactory $wrappedFactory, $cloneObjects)
     {
         $this->cache = $cache;
         $this->wrappedFactory = $wrappedFactory;
+        $this->cloneObjects = $cloneObjects;
     }
 
     /**
@@ -69,7 +74,7 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
     private function cache($hash, FixtureDefinition $definition)
     {
         if (empty($this->cache[$hash])) {
-            $this->cache[$hash] = new CacheableDefinition($definition);
+            $this->cache[$hash] = new CacheableDefinition($definition, $this->cloneObjects);
         }
 
         return $this->cache[$hash];

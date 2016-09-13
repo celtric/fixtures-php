@@ -13,7 +13,7 @@ final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function returns_wrapped_definition_value()
     {
-        $definition = new CacheableDefinition(new ScalarFixture("Ricard"));
+        $definition = new CacheableDefinition(new ScalarFixture("Ricard"), true);
 
         $this->assertEquals("Ricard", $definition->instantiate());
     }
@@ -23,7 +23,7 @@ final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
     {
         $spy = $this->prophesize(FixtureDefinition::class);
         $spy->instantiate()->willReturn("Ricard");
-        $definition = new CacheableDefinition($spy->reveal());
+        $definition = new CacheableDefinition($spy->reveal(), true);
 
         $definition->instantiate();
         $definition->instantiate();
@@ -33,12 +33,22 @@ final class CacheableDefinitionTest extends \PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function clones_objects()
+    public function can_clone_objects()
     {
-        $definition = new CacheableDefinition(new ObjectFixture(Person::class, []));
+        $definition = new CacheableDefinition(new ObjectFixture(Person::class, []), true);
 
         $definition->instantiate()->setFriend(new Person("A friend", 30));
 
         $this->assertNull($definition->instantiate()->friend());
+    }
+
+    /** @test */
+    public function can_ignore_cloning()
+    {
+        $definition = new CacheableDefinition(new ObjectFixture(Person::class, []), false);
+
+        $definition->instantiate()->setFriend(new Person("A friend", 30));
+
+        $this->assertNotEmpty($definition->instantiate()->friend());
     }
 }

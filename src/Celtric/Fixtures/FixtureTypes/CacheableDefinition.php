@@ -12,12 +12,17 @@ final class CacheableDefinition implements FixtureDefinition
     /** @var mixed */
     private $cache;
 
+    /** @var bool */
+    private $cloneObjects;
+
     /**
      * @param FixtureDefinition $definition
+     * @param bool $cloneObjects
      */
-    public function __construct(FixtureDefinition $definition)
+    public function __construct(FixtureDefinition $definition, $cloneObjects)
     {
         $this->definition = $definition;
+        $this->cloneObjects = $cloneObjects;
     }
 
     /**
@@ -29,6 +34,6 @@ final class CacheableDefinition implements FixtureDefinition
             $this->cache = $this->definition->instantiate();
         }
 
-        return is_object($this->cache) ? clone $this->cache : $this->cache;
+        return $this->cloneObjects && is_object($this->cache) ? clone $this->cache : $this->cache;
     }
 }
