@@ -43,14 +43,14 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      */
     public function arr(array $data)
     {
-        return $this->cache($this->serialize($data), $this->wrappedFactory->arr($data));
+        return $this->cache($this->hash($data), $this->wrappedFactory->arr($data));
     }
     /**
      * @inheritDoc
      */
     public function object($className, array $properties)
     {
-        return $this->cache($this->serialize([$className, $properties]), $this->wrappedFactory->object($className, $properties));
+        return $this->cache($this->hash([$className, $properties]), $this->wrappedFactory->object($className, $properties));
     }
 
     /**
@@ -79,7 +79,7 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      * @param mixed $data
      * @return string
      */
-    private function serialize($data)
+    private function hash($data)
     {
         return md5(serialize($data));
     }
