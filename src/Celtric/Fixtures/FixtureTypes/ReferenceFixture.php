@@ -67,4 +67,12 @@ final class ReferenceFixture implements FixtureDefinition
 
         return $property->getValue($object);
     }
+
+    /**
+     * @inheritDoc
+     */
+    function __sleep()
+    {
+        return ['reference'];
+    }
 }
