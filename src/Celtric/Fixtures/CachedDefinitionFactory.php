@@ -6,22 +6,51 @@ use Celtric\Fixtures\FixtureTypes\CacheableDefinition;
 
 class CachedDefinitionFactory extends FixtureDefinitionFactory
 {
-    /** @var FixtureDefinition[] */
-    private static $cache = [];
+    /** @var \ArrayObject */
+    private $cache;
+
+    /** @var FixtureDefinitionFactory */
+    private $wrappedFactory;
+
+    /**
+     * @param \ArrayObject $cache
+     * @param FixtureDefinitionFactory $wrappedFactory
+     */
+    public function __construct(\ArrayObject $cache, FixtureDefinitionFactory $wrappedFactory)
+    {
+        $this->cache = $cache;
+        $this->wrappedFactory = $wrappedFactory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function null()
+    {
+        return $this->wrappedFactory->null();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function scalar($value)
+    {
+        return $this->wrappedFactory->scalar($value);
+    }
 
     /**
      * @inheritDoc
      */
     public function arr(array $data)
     {
-        return $this->cache($this->serialize($data), parent::arr($data));
+        return $this->cache($this->serialize($data), $this->wrappedFactory->arr($data));
     }
     /**
      * @inheritDoc
      */
     public function object($className, array $properties)
     {
-        return $this->cache($this->serialize([$className, $properties]), parent::object($className, $properties));
+        return $this->cache($this->serialize([$className, $properties]), $this->wrappedFactory->object($className, $properties));
     }
 
     /**
@@ -29,7 +58,7 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      */
     public function reference($reference, DefinitionLocator $definitionLocator)
     {
-        return $this->cache($reference, parent::reference($reference, $definitionLocator));
+        return $this->cache($reference, $this->wrappedFactory->reference($reference, $definitionLocator));
     }
 
     /**
@@ -39,11 +68,11 @@ class CachedDefinitionFactory extends FixtureDefinitionFactory
      */
     private function cache($hash, FixtureDefinition $definition)
     {
-        if (empty(static::$cache[$hash])) {
-            static::$cache[$hash] = new CacheableDefinition($definition);
+        if (empty($this->cache[$hash])) {
+            $this->cache[$hash] = new CacheableDefinition($definition);
         }
 
-        return static::$cache[$hash];
+        return $this->cache[$hash];
     }
 
     /**

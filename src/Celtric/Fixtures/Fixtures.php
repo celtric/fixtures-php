@@ -29,7 +29,7 @@ final class Fixtures
     {
         $definitionLocator = new SingleParserDefinitionLocator(
                 new YAMLRawDataLocator($fixturesPath),
-                new CeltricStyleParser(new CachedDefinitionFactory()));
+                new CeltricStyleParser(new CachedDefinitionFactory(new \ArrayObject(), new FixtureDefinitionFactory())));
 
         return new self(new LocatorCacher($definitionLocator));
     }
@@ -42,7 +42,7 @@ final class Fixtures
     {
         $definitionLocator = new SingleParserDefinitionLocator(
                 new YAMLRawDataLocator($fixturesPath),
-                new AliceStyleParser(new CachedDefinitionFactory()));
+                new AliceStyleParser(new CachedDefinitionFactory(new \ArrayObject(), new FixtureDefinitionFactory())));
 
         return new self(new LocatorCacher($definitionLocator));
     }
