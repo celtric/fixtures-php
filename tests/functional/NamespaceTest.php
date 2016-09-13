@@ -12,6 +12,7 @@ final class NamespaceTest extends CeltricStyleFunctionalTestCase
             "integer" => 123,
             "float" => 123.456,
             "string" => "Foo",
+            "empty_string" => "",
             "boolean" => true
         ], $this->fixtures()->namespaceFixtures("scalar"));
     }

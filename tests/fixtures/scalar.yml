@@ -6,4 +6,6 @@ float: 123.456
 
 string: "Foo"
 
+empty_string: ""
+
 boolean: true

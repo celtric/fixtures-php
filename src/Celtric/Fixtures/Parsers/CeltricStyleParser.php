@@ -109,7 +109,7 @@ final class CeltricStyleParser implements RawDataParser
      */
     private function toDefinition($key, $value, $defaultType, DefinitionLocator $definitionLocator)
     {
-        $isReference = is_string($value) && $value[0] === "@";
+        $isReference = is_string($value) && strpos($value, "@") === 0;
         $isMethod = method_exists($defaultType, $key);
         $type = null;
 

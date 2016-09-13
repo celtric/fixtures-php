@@ -29,6 +29,12 @@ final class ScalarTest extends CeltricStyleFunctionalTestCase
     }
 
     /** @test */
+    public function empty_string()
+    {
+        $this->assertSame("", $this->fixture("scalar.empty_string"));
+    }
+
+    /** @test */
     public function boolean()
     {
         $this->assertTrue($this->fixture("scalar.boolean"));
