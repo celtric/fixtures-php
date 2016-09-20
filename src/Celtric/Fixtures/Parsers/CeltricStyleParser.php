@@ -6,7 +6,8 @@ use Celtric\Fixtures\DefinitionLocator;
 use Celtric\Fixtures\FixtureDefinitionFactory;
 use Celtric\Fixtures\RawDataParser;
 use Celtric\Fixtures\FixtureDefinition;
-use phpDocumentor\Reflection\DocBlock;
+use Celtric\Fixtures\Utils\ClassTypeExtractor;
+use Celtric\Fixtures\Utils\PhpDocumentorDocBlockReader;
 
 final class CeltricStyleParser implements RawDataParser
 {
@@ -157,44 +158,6 @@ final class CeltricStyleParser implements RawDataParser
      */
     private function extractClassPropertyType($className, $propertyName)
     {
-        if ($className === "array" || !property_exists($className, $propertyName)) {
-            return null;
-        }
-
-        $comment = (new \ReflectionProperty($className, $propertyName))->getDocComment();
-
-        if (empty($comment)) {
-            return null;
-        }
-
-        $docBlock = new DocBlock($comment);
-        $tags = $docBlock->getTagsByName("var");
-
-        if (empty($tags)) {
-            return null;
-        }
-
-        $docBlockType = $tags[0]->getContent();
-
-        if ($this->isNativeType($docBlockType)) {
-            return $docBlockType;
-        }
-
-        if (substr($docBlockType, 0, 1) === "\\") {
-            return $docBlockType;
-        }
-
-        $namespace = (new \ReflectionClass($className))->getNamespaceName();
-
-        return "{$namespace}\\{$docBlockType}";
-    }
-
-    /**
-     * @param string $type
-     * @return bool
-     */
-    private function isNativeType($type)
-    {
-        return in_array($type, ['int', 'integer', 'bool', 'boolean', 'string', 'null'], true);
+        return (new ClassTypeExtractor(new PhpDocumentorDocBlockReader()))->extractPropertyType($className, $propertyName);
     }
 }
